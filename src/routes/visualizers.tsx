@@ -81,6 +81,14 @@ export const VIZ_LIST = [
     desc: "Iterative left → node → right with a stack.",
     icon: TreeDeciduous,
   },
+  { slug: "sorting", title: "Sorting", desc: "Compare-and-swap classics like merge & quick sort.", icon: ArrowDownUp, comingSoon: true },
+  { slug: "arrays", title: "Arrays", desc: "Prefix sums, rotations, and in-place tricks.", icon: Grid3x3, comingSoon: true },
+  { slug: "strings", title: "Strings", desc: "Hashing, palindromes, and pattern matching.", icon: Type, comingSoon: true },
+  { slug: "bit-manipulation", title: "Bit Manipulation", desc: "XOR tricks, masks, and bit DP.", icon: Binary, comingSoon: true },
+  { slug: "greedy", title: "Greedy Algorithms", desc: "Local choices that lead to global optima.", icon: Sparkles, comingSoon: true },
+  { slug: "bst", title: "Binary Search Trees", desc: "Ordered insert, search, and successor walks.", icon: TreePine, comingSoon: true },
+  { slug: "tries", title: "Tries", desc: "Prefix trees for fast lookup and autocomplete.", icon: Hash, comingSoon: true },
+  { slug: "strings-advanced", title: "Strings Advanced", desc: "KMP, Z-function, and suffix structures.", icon: BookOpen, comingSoon: true },
 ];
 
 function VisualizersLayout() {
