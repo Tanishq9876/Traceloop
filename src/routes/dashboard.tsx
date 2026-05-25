@@ -18,6 +18,7 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/use-profile";
 import { listSessions, getStats, listBookmarks, getProfile } from "@/lib/learning.functions";
 
 export const Route = createFileRoute("/dashboard")({
