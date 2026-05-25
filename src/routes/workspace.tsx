@@ -449,10 +449,23 @@ function Workspace() {
               </Button>
 
               <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
+                <select
+                  value={mode}
+                  onChange={(e) => { setMode(e.target.value); setModeTouched(true); }}
+                  disabled={streaming}
+                  className="rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  title="Explanation mode"
+                >
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="interview">Interview</option>
+                  <option value="fast">Fast revision</option>
+                  <option value="eli10">ELI10</option>
+                </select>
                 <Code2 className="h-3.5 w-3.5" />
                 <select
                   value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
+                  onChange={(e) => { setLanguage(e.target.value); setLanguageTouched(true); }}
                   disabled={streaming}
                   className="rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 >
