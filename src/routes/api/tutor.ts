@@ -9,11 +9,22 @@ const LANG_NAMES: Record<string, string> = {
   go: "Go",
 };
 
-function systemPrompt(language: string) {
+const MODE_INSTRUCTIONS: Record<string, string> = {
+  beginner: "Audience: absolute beginner. Use the simplest possible language, define every term, and prefer analogies before jargon.",
+  intermediate: "Audience: intermediate learner who knows basics. Be clear and precise, no hand-holding.",
+  interview: "Audience: interview prep. Be crisp, communicate trade-offs explicitly, and write production-quality interview code.",
+  fast: "Audience: fast revision. Be extremely terse — minimum words per bullet, maximum signal. Skip warmup explanations.",
+  eli10: "Audience: explain like I'm 10. Use everyday analogies (toys, lines at a store, lockers) before introducing any technical term.",
+};
+
+function systemPrompt(language: string, mode: string) {
   const lang = LANG_NAMES[language] ?? "Python";
   const fenceLang =
     language === "cpp" ? "cpp" : language === "typescript" ? "ts" : language;
+  const modeLine = MODE_INSTRUCTIONS[mode] ?? MODE_INSTRUCTIONS.intermediate;
   return `You are Traceloop, an elite DSA tutor. The user gives you a programming problem (as text and/or an image of a problem statement). If an image is provided, first read the problem from it.
+
+${modeLine}
 
 FORMAT RULES (very important):
 - Write in a clean, ChatGPT-style structured format.
