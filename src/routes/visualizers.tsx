@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeftRight, Crosshair, Layers, Search, Network, GitBranch, Workflow, Grid3x3, ListOrdered, Mountain, Link2, TreeDeciduous, ArrowDownUp, Type, Binary, Sparkles, TreePine, Hash, BookOpen } from "lucide-react";
+import { ArrowLeftRight, Crosshair, Layers, Search, Network, GitBranch, Workflow, Grid3x3, ListOrdered, Mountain, Link2, TreeDeciduous } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 
 export const Route = createFileRoute("/visualizers")({
