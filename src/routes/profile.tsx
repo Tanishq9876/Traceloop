@@ -20,6 +20,7 @@ import {
   getStats,
 } from "@/lib/learning.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "@/hooks/use-profile";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
