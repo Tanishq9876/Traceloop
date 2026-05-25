@@ -154,7 +154,7 @@ function Workspace() {
       const resp = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problem, language, imageDataUrl }),
+        body: JSON.stringify({ problem, language, mode, imageDataUrl }),
         signal: controller.signal,
       });
 
