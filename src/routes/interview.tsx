@@ -226,6 +226,8 @@ function Interview() {
 
   function reset() {
     abortRef.current?.abort();
+    stopSpeaking();
+    recognitionRef.current?.stop?.();
     setTopic(null);
     setMessages([]);
     setHintLevel(0);
