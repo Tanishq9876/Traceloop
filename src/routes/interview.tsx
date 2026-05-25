@@ -202,6 +202,14 @@ function Interview() {
     } finally {
       setStreaming(false);
       abortRef.current = null;
+      if (voiceEnabled) {
+        // Read the just-finished assistant message
+        setMessages((curr) => {
+          const last = curr[curr.length - 1];
+          if (last?.role === "assistant" && last.content) speak(last.content);
+          return curr;
+        });
+      }
     }
   }
 
