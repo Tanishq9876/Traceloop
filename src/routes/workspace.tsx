@@ -321,13 +321,13 @@ function Workspace() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className={`grid grid-cols-1 gap-6 ${expanded ? "" : "lg:grid-cols-2"}`}>
           {/* Input */}
           <motion.section
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="glass flex flex-col rounded-2xl p-5"
+            className={`glass flex-col rounded-2xl p-5 ${expanded ? "hidden" : "flex"}`}
           >
             <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Problem statement
