@@ -18,6 +18,8 @@ import {
   Code2,
   Maximize2,
   Minimize2,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
