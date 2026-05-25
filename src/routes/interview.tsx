@@ -121,8 +121,6 @@ function Interview() {
 
   function startInterview(t: string) {
     setTopic(t);
-    setSeconds(0);
-    setRunning(true);
     setMessages([]);
     setHintLevel(0);
     setHintText("");
@@ -133,9 +131,7 @@ function Interview() {
 
   function reset() {
     abortRef.current?.abort();
-    setRunning(false);
     setTopic(null);
-    setSeconds(0);
     setMessages([]);
     setHintLevel(0);
     setHintText("");
