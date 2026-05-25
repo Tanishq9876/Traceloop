@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeftRight, Crosshair, Layers, Search } from "lucide-react";
+import { ArrowLeftRight, Crosshair, Layers, Search, Network, GitBranch, Workflow, Grid3x3 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 
 export const Route = createFileRoute("/visualizers")({
@@ -32,6 +32,30 @@ export const VIZ_LIST = [
     title: "Binary Search",
     desc: "Divide a sorted range in half.",
     icon: Search,
+  },
+  {
+    slug: "bfs",
+    title: "BFS — Graph Traversal",
+    desc: "Layer-by-layer exploration with a queue.",
+    icon: Network,
+  },
+  {
+    slug: "dfs",
+    title: "DFS — Graph Traversal",
+    desc: "Go deep first using a stack.",
+    icon: Workflow,
+  },
+  {
+    slug: "recursion-tree",
+    title: "Recursion Tree — fib(n)",
+    desc: "See repeated subproblems explode.",
+    icon: GitBranch,
+  },
+  {
+    slug: "dp-grid",
+    title: "DP — Unique Paths",
+    desc: "Fill a grid bottom-up with recurrences.",
+    icon: Grid3x3,
   },
 ];
 

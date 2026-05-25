@@ -5,6 +5,10 @@ import { TwoPointersViz } from "@/components/visualizers/TwoPointersViz";
 import { SlidingWindowViz } from "@/components/visualizers/SlidingWindowViz";
 import { StackViz } from "@/components/visualizers/StackViz";
 import { BinarySearchViz } from "@/components/visualizers/BinarySearchViz";
+import { BFSViz } from "@/components/visualizers/BFSViz";
+import { DFSViz } from "@/components/visualizers/DFSViz";
+import { RecursionTreeViz } from "@/components/visualizers/RecursionTreeViz";
+import { DPGridViz } from "@/components/visualizers/DPGridViz";
 import { VIZ_LIST } from "./visualizers";
 
 const REGISTRY: Record<string, { title: string; node: React.ReactNode; blurb: string }> = {
@@ -31,6 +35,30 @@ const REGISTRY: Record<string, { title: string; node: React.ReactNode; blurb: st
     blurb:
       "Halve the search range each step by comparing the middle element to the target. Each iteration eliminates half the candidates → O(log n).",
     node: <BinarySearchViz />,
+  },
+  bfs: {
+    title: "BFS — Graph Traversal",
+    blurb:
+      "Explore a graph layer by layer using a queue. Every node at distance k is visited before any node at distance k+1, which is why BFS finds shortest paths in unweighted graphs.",
+    node: <BFSViz />,
+  },
+  dfs: {
+    title: "DFS — Graph Traversal",
+    blurb:
+      "Go as deep as possible before backtracking. Implemented with a stack (or recursion). Great for connectivity, cycle detection, and topological sort.",
+    node: <DFSViz />,
+  },
+  "recursion-tree": {
+    title: "Recursion Tree — fib(n)",
+    blurb:
+      "Naive Fibonacci recursion calls the same subproblem many times. Watch the tree expand exponentially — this is exactly the redundancy memoization (top-down DP) eliminates.",
+    node: <RecursionTreeViz />,
+  },
+  "dp-grid": {
+    title: "DP — Unique Paths",
+    blurb:
+      "Count paths from top-left to bottom-right moving only right or down. Each cell equals the cell above plus the cell to the left — a classic bottom-up DP recurrence.",
+    node: <DPGridViz />,
   },
 };
 
