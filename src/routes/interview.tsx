@@ -51,9 +51,9 @@ function Interview() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, streaming]);
 
-  async function send(text: string) {
+  async function send(text: string, opts: { hidden?: boolean } = {}) {
     if (!text.trim() || streaming) return;
-    const userMsg: Msg = { role: "user", content: text.trim() };
+    const userMsg: Msg = { role: "user", content: text.trim(), hidden: opts.hidden };
     const nextHistory = [...messages, userMsg];
     setMessages([...nextHistory, { role: "assistant", content: "" }]);
     setInput("");
@@ -64,7 +64,9 @@ function Interview() {
       const resp = await fetch("/api/interview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextHistory }),
+        body: JSON.stringify({
+          messages: nextHistory.map(({ role, content }) => ({ role, content })),
+        }),
         signal: controller.signal,
       });
       if (!resp.ok || !resp.body) {
