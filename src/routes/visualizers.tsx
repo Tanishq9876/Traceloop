@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeftRight, Crosshair, Layers, Search, Network, GitBranch, Workflow, Grid3x3, ListOrdered, Mountain, Link2, TreeDeciduous } from "lucide-react";
+import { ArrowLeftRight, Crosshair, Layers, Search, Network, GitBranch, Workflow, Grid3x3, ListOrdered, Mountain, Link2, TreeDeciduous, ArrowDownUp, Type, Binary, Sparkles, TreePine, Hash, BookOpen } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 
 export const Route = createFileRoute("/visualizers")({
@@ -81,6 +81,14 @@ export const VIZ_LIST = [
     desc: "Iterative left → node → right with a stack.",
     icon: TreeDeciduous,
   },
+  { slug: "sorting", title: "Sorting", desc: "Compare-and-swap classics like merge & quick sort.", icon: ArrowDownUp, comingSoon: true },
+  { slug: "arrays", title: "Arrays", desc: "Prefix sums, rotations, and in-place tricks.", icon: Grid3x3, comingSoon: true },
+  { slug: "strings", title: "Strings", desc: "Hashing, palindromes, and pattern matching.", icon: Type, comingSoon: true },
+  { slug: "bit-manipulation", title: "Bit Manipulation", desc: "XOR tricks, masks, and bit DP.", icon: Binary, comingSoon: true },
+  { slug: "greedy", title: "Greedy Algorithms", desc: "Local choices that lead to global optima.", icon: Sparkles, comingSoon: true },
+  { slug: "bst", title: "Binary Search Trees", desc: "Ordered insert, search, and successor walks.", icon: TreePine, comingSoon: true },
+  { slug: "tries", title: "Tries", desc: "Prefix trees for fast lookup and autocomplete.", icon: Hash, comingSoon: true },
+  { slug: "strings-advanced", title: "Strings Advanced", desc: "KMP, Z-function, and suffix structures.", icon: BookOpen, comingSoon: true },
 ];
 
 function VisualizersLayout() {
@@ -109,31 +117,49 @@ function VisualizersLayout() {
 function VizIndex() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {VIZ_LIST.map((v, i) => (
-        <motion.div
-          key={v.slug}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: i * 0.04 }}
-        >
-          <Link
-            to="/visualizers/$slug"
-            params={{ slug: v.slug }}
-            className="glass group block rounded-2xl p-6 transition-colors hover:bg-white/[0.04]"
-          >
+      {VIZ_LIST.map((v, i) => {
+        const cardInner = (
+          <>
             <div className="flex items-center gap-3">
               <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
                 <v.icon className="h-5 w-5" />
               </div>
               <h3 className="text-base font-semibold">{v.title}</h3>
+              {v.comingSoon && (
+                <span className="ml-auto rounded-full border border-border bg-card/60 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Soon
+                </span>
+              )}
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{v.desc}</p>
-            <div className="mt-4 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-              Open visualizer →
-            </div>
-          </Link>
-        </motion.div>
-      ))}
+            {!v.comingSoon && (
+              <div className="mt-4 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                Open visualizer →
+              </div>
+            )}
+          </>
+        );
+        return (
+          <motion.div
+            key={v.slug}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: i * 0.04 }}
+          >
+            {v.comingSoon ? (
+              <div className="glass block rounded-2xl p-6 opacity-60">{cardInner}</div>
+            ) : (
+              <Link
+                to="/visualizers/$slug"
+                params={{ slug: v.slug }}
+                className="glass group block rounded-2xl p-6 transition-colors hover:bg-white/[0.04]"
+              >
+                {cardInner}
+              </Link>
+            )}
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
