@@ -117,31 +117,49 @@ function VisualizersLayout() {
 function VizIndex() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {VIZ_LIST.map((v, i) => (
-        <motion.div
-          key={v.slug}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: i * 0.04 }}
-        >
-          <Link
-            to="/visualizers/$slug"
-            params={{ slug: v.slug }}
-            className="glass group block rounded-2xl p-6 transition-colors hover:bg-white/[0.04]"
-          >
+      {VIZ_LIST.map((v, i) => {
+        const cardInner = (
+          <>
             <div className="flex items-center gap-3">
               <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
                 <v.icon className="h-5 w-5" />
               </div>
               <h3 className="text-base font-semibold">{v.title}</h3>
+              {v.comingSoon && (
+                <span className="ml-auto rounded-full border border-border bg-card/60 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Soon
+                </span>
+              )}
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{v.desc}</p>
-            <div className="mt-4 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-              Open visualizer →
-            </div>
-          </Link>
-        </motion.div>
-      ))}
+            {!v.comingSoon && (
+              <div className="mt-4 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                Open visualizer →
+              </div>
+            )}
+          </>
+        );
+        return (
+          <motion.div
+            key={v.slug}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: i * 0.04 }}
+          >
+            {v.comingSoon ? (
+              <div className="glass block rounded-2xl p-6 opacity-60">{cardInner}</div>
+            ) : (
+              <Link
+                to="/visualizers/$slug"
+                params={{ slug: v.slug }}
+                className="glass group block rounded-2xl p-6 transition-colors hover:bg-white/[0.04]"
+              >
+                {cardInner}
+              </Link>
+            )}
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
