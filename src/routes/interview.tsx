@@ -215,9 +215,8 @@ function Interview() {
           </div>
           {topic && (
             <div className="flex items-center gap-3 text-sm">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/40 px-3 py-1.5">
-                <Timer className="h-3.5 w-3.5 text-primary" />
-                <span className="font-mono">{fmt(Math.max(0, duration - seconds))}</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/40 px-3 py-1.5 text-xs text-muted-foreground">
+                Topic: <span className="text-foreground">{topic}</span>
               </div>
               <Button variant="ghost" size="sm" onClick={reset} className="gap-2">
                 <RotateCcw className="h-4 w-4" /> End
@@ -234,7 +233,7 @@ function Interview() {
           >
             <div className="text-sm font-medium text-foreground">Pick a topic to begin</div>
             <p className="mt-1 text-sm text-muted-foreground">
-              30-minute timed session. The interviewer will pick a problem suited to the topic.
+              The interviewer will pick a problem suited to the topic.
             </p>
             <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {TOPICS.map((t) => (
@@ -247,23 +246,24 @@ function Interview() {
                 </button>
               ))}
             </div>
-            <div className="mt-5 flex items-center gap-3 text-xs text-muted-foreground">
-              <span>Duration</span>
-              {[15, 30, 45].map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setDuration(m * 60)}
-                  className={[
-                    "rounded-full border px-3 py-1",
-                    duration === m * 60
-                      ? "border-primary/60 bg-primary/15 text-primary"
-                      : "border-border/60 hover:border-primary/40",
-                  ].join(" ")}
-                >
-                  {m} min
-                </button>
-              ))}
-            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const t = customTopic.trim();
+                if (t) startInterview(t);
+              }}
+              className="mt-5 flex items-center gap-2"
+            >
+              <Input
+                value={customTopic}
+                onChange={(e) => setCustomTopic(e.target.value)}
+                placeholder="Or type your own topic (e.g. tries, segment trees, bitmask DP)…"
+                className="border-border/60 bg-background/40"
+              />
+              <Button type="submit" disabled={!customTopic.trim()}>
+                Start
+              </Button>
+            </form>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
