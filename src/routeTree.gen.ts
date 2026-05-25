@@ -18,6 +18,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VisualizersSlugRouteImport } from './routes/visualizers.$slug'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
+import { Route as ApiInterviewRouteImport } from './routes/api/interview'
+import { Route as ApiHintRouteImport } from './routes/api/hint'
 
 const WorkspaceRoute = WorkspaceRouteImport.update({
   id: '/workspace',
@@ -64,6 +66,16 @@ const ApiTutorRoute = ApiTutorRouteImport.update({
   path: '/api/tutor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiInterviewRoute = ApiInterviewRouteImport.update({
+  id: '/api/interview',
+  path: '/api/interview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHintRoute = ApiHintRouteImport.update({
+  id: '/api/hint',
+  path: '/api/hint',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,6 +85,8 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/hint': typeof ApiHintRoute
+  '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
   '/visualizers/$slug': typeof VisualizersSlugRoute
 }
@@ -84,6 +98,8 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/hint': typeof ApiHintRoute
+  '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
   '/visualizers/$slug': typeof VisualizersSlugRoute
 }
@@ -96,6 +112,8 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/hint': typeof ApiHintRoute
+  '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
   '/visualizers/$slug': typeof VisualizersSlugRoute
 }
@@ -109,6 +127,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/hint'
+    | '/api/interview'
     | '/api/tutor'
     | '/visualizers/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +140,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/hint'
+    | '/api/interview'
     | '/api/tutor'
     | '/visualizers/$slug'
   id:
@@ -131,6 +153,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/hint'
+    | '/api/interview'
     | '/api/tutor'
     | '/visualizers/$slug'
   fileRoutesById: FileRoutesById
@@ -143,6 +167,8 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   VisualizersRoute: typeof VisualizersRouteWithChildren
   WorkspaceRoute: typeof WorkspaceRoute
+  ApiHintRoute: typeof ApiHintRoute
+  ApiInterviewRoute: typeof ApiInterviewRoute
   ApiTutorRoute: typeof ApiTutorRoute
 }
 
@@ -211,6 +237,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTutorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/interview': {
+      id: '/api/interview'
+      path: '/api/interview'
+      fullPath: '/api/interview'
+      preLoaderRoute: typeof ApiInterviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hint': {
+      id: '/api/hint'
+      path: '/api/hint'
+      fullPath: '/api/hint'
+      preLoaderRoute: typeof ApiHintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -234,8 +274,20 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   VisualizersRoute: VisualizersRouteWithChildren,
   WorkspaceRoute: WorkspaceRoute,
+  ApiHintRoute: ApiHintRoute,
+  ApiInterviewRoute: ApiInterviewRoute,
   ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
