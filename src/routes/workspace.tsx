@@ -22,6 +22,7 @@ import {
   Check,
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
+import { TutorOutput } from "@/components/TutorOutput";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
