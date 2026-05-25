@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Shuffle, RotateCcw, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -7,7 +7,7 @@ type Field = {
   label: string;
   value: string;
   placeholder?: string;
-  width?: string; // e.g. "w-64"
+  width?: string;
 };
 
 export function VizControls({
@@ -27,12 +27,10 @@ export function VizControls({
     Object.fromEntries(fields.map((f) => [f.key, f.value])),
   );
 
-  // keep draft in sync if external values change (e.g. after Random / Reset)
   const sig = fields.map((f) => `${f.key}=${f.value}`).join("|");
-  
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setDraft(Object.fromEntries(fields.map((f) => [f.key, f.value])));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sig]);
 
   return (
@@ -58,29 +56,48 @@ export function VizControls({
             <Wand2 className="h-3.5 w-3.5" />
             Apply
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={onRandom}
-            className="gap-1.5"
-          >
+          <Button size="sm" variant="outline" onClick={onRandom} className="gap-1.5">
             <Shuffle className="h-3.5 w-3.5" />
             Random
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={onReset}
-            className="gap-1.5"
-          >
+          <Button size="sm" variant="ghost" onClick={onReset} className="gap-1.5">
             <RotateCcw className="h-3.5 w-3.5" />
             Reset
           </Button>
         </div>
       </div>
-      {error && (
-        <div className="mt-2 text-xs text-destructive">{error}</div>
-      )}
+      {error && <div className="mt-2 text-xs text-destructive">{error}</div>}
     </div>
   );
+}
+
+// Parse helpers exported for vizzes
+export function parseIntList(s: string): number[] {
+  const parts = s
+    .split(/[,\s]+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+  const nums = parts.map((p) => {
+    const n = Number(p);
+    if (!Number.isFinite(n)) throw new Error(`"${p}" is not a number`);
+    return Math.trunc(n);
+  });
+  if (nums.length === 0) throw new Error("Enter at least one number");
+  return nums;
+}
+
+export function parseInteger(s: string, label = "value"): number {
+  const n = Number(s.trim());
+  if (!Number.isFinite(n)) throw new Error(`${label} must be a number`);
+  return Math.trunc(n);
+}
+
+export function randomArray(min: number, max: number, len: number): number[] {
+  return Array.from({ length: len }, () =>
+    Math.floor(Math.random() * (max - min + 1)) + min,
+  );
+}
+
+export function randomSorted(min: number, max: number, len: number): number[] {
+  return randomArray(min, max, len).sort((a, b) => a - b);
 }
