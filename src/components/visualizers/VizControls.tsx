@@ -1,0 +1,86 @@
+import { useState, useEffect } from "react";
+import { Shuffle, RotateCcw, Wand2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+type Field = {
+  key: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  width?: string; // e.g. "w-64"
+};
+
+export function VizControls({
+  fields,
+  onApply,
+  onRandom,
+  onReset,
+  error,
+}: {
+  fields: Field[];
+  onApply: (values: Record<string, string>) => void;
+  onRandom: () => void;
+  onReset: () => void;
+  error?: string | null;
+}) {
+  const [draft, setDraft] = useState<Record<string, string>>(
+    Object.fromEntries(fields.map((f) => [f.key, f.value])),
+  );
+
+  // keep draft in sync if external values change (e.g. after Random / Reset)
+  const sig = fields.map((f) => `${f.key}=${f.value}`).join("|");
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setDraft(Object.fromEntries(fields.map((f) => [f.key, f.value])));
+  }, [sig]);
+
+  return (
+    <div className="glass mb-4 rounded-xl border border-border/60 p-4">
+      <div className="flex flex-wrap items-end gap-3">
+        {fields.map((f) => (
+          <label key={f.key} className="flex flex-col gap-1 text-xs">
+            <span className="uppercase tracking-wider text-muted-foreground">
+              {f.label}
+            </span>
+            <input
+              value={draft[f.key] ?? ""}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, [f.key]: e.target.value }))
+              }
+              placeholder={f.placeholder}
+              className={`${f.width ?? "w-64"} rounded-md border border-border/60 bg-background/40 px-3 py-1.5 font-mono text-sm focus:border-primary focus:outline-none`}
+            />
+          </label>
+        ))}
+        <div className="flex gap-2">
+          <Button size="sm" onClick={() => onApply(draft)} className="gap-1.5">
+            <Wand2 className="h-3.5 w-3.5" />
+            Apply
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={onRandom}
+            className="gap-1.5"
+          >
+            <Shuffle className="h-3.5 w-3.5" />
+            Random
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onReset}
+            className="gap-1.5"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Reset
+          </Button>
+        </div>
+      </div>
+      {error && (
+        <div className="mt-2 text-xs text-destructive">{error}</div>
+      )}
+    </div>
+  );
+}
