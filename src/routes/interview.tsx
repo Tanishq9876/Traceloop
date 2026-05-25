@@ -32,9 +32,7 @@ function Interview() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [topic, setTopic] = useState<string | null>(null);
-  const [duration, setDuration] = useState(30 * 60);
-  const [running, setRunning] = useState(false);
-  const [seconds, setSeconds] = useState(0);
+  const [customTopic, setCustomTopic] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
