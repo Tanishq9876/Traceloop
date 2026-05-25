@@ -595,6 +595,39 @@ function TutorOutput({ text }: { text: string }) {
   );
 }
 
+function CodeBlock({ code, lang }: { code: string; lang: string }) {
+  const [copied, setCopied] = useState(false);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      toast.success("Code copied — paste into LeetCode");
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      toast.error("Couldn't copy");
+    }
+  };
+  return (
+    <div className="group relative overflow-hidden rounded-lg border border-border/60 bg-background/80">
+      <div className="flex items-center justify-between border-b border-border/40 bg-muted/30 px-3 py-1.5">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          {lang || "code"}
+        </span>
+        <button
+          onClick={onCopy}
+          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition hover:bg-accent hover:text-foreground"
+        >
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <pre className="overflow-x-auto p-4 font-mono text-xs text-foreground/90">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+
 function splitRow(line: string): string[] {
   const trimmed = line.trim().replace(/^\|/, "").replace(/\|$/, "");
   return trimmed.split("|").map((c) => c.trim());
