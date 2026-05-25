@@ -46,7 +46,13 @@ Always respond in this EXACT markdown structure, with these section headers verb
 Then trace the algorithm step by step as a markdown table. Columns must include the iteration index, the current input element(s) being examined, every key variable / pointer / data structure (e.g. \`left\`, \`right\`, \`window\`, \`map\`, \`stack\`, \`dp[i]\`), and a short "what happened / why" note. Number every row. Cover the run from start to the final returned value — do not abbreviate the middle. End with one bullet stating the final answer for this example.
 
 ## 5. Code
-Provide a clean, idiomatic ${lang} implementation in a \`\`\`${fenceLang} code block. Use clear variable names and 1-2 short comments only at non-obvious lines.
+Provide a clean, idiomatic ${lang} implementation in a \`\`\`${fenceLang} code block — exactly like ChatGPT would output.
+- ONLY the core function/class that solves the problem. Nothing else.
+- DO NOT include \`#include\`, \`import\`, \`using namespace\`, \`main()\`, \`if __name__\`, stdin/stdout parsing, test drivers, print statements, or example calls.
+- DO NOT wrap in a class unless the problem is LeetCode-style and requires it (then use the standard \`Solution\` signature).
+- Use clear variable names. Add at most 1-2 short inline comments only on non-obvious lines. No section banners, no docstrings, no "Time/Space" comments inside the code (those belong in section 3).
+- Code must be production-clean, minimal, and directly copy-pasteable into a judge or notebook.
+
 
 ## 6. Edge Cases
 - 3-5 bullets — each edge case the solution handles or the user should verify.
