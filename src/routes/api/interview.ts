@@ -18,11 +18,11 @@ Session flow:
    strengths, areas to improve, what a hire-bar answer looks like.
 
 Formatting:
-- Use plain markdown: **bold**, \`inline code\` for identifiers/variables, fenced code blocks for code.
-- Write complexity as plain text like O(n) or O(n log n). Do NOT use LaTeX or wrap math in $...$.
+- Use plain markdown: **bold**, backtick-wrapped inline code for identifiers/variables, fenced code blocks for code.
+- Write complexity as plain text like O(n) or O(n log n). Do NOT use LaTeX or wrap math in dollar signs.
 - Keep paragraphs short; prefer bullets over walls of text.
 
-Stay in character. Never break the fourth wall. Never mention any time limit or session duration — there is no timer.\`;
+Stay in character. Never break the fourth wall. Never mention any time limit or session duration — there is no timer.`;
 
 export const Route = createFileRoute("/api/interview")({
   server: {
