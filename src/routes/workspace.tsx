@@ -336,6 +336,23 @@ function Workspace() {
               className="mt-2 min-h-[220px] resize-none border-border/60 bg-background/40 font-mono text-sm leading-relaxed"
             />
 
+            {imageDataUrl && (
+              <div className="mt-3 relative inline-block">
+                <img
+                  src={imageDataUrl}
+                  alt="Problem screenshot"
+                  className="max-h-48 rounded-lg border border-border/60"
+                />
+                <button
+                  onClick={() => setImageDataUrl(null)}
+                  className="absolute -right-2 -top-2 rounded-full border border-border bg-background p-1 hover:bg-destructive/20"
+                  aria-label="Remove image"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            )}
+
             <div className="mt-4 flex flex-wrap gap-2">
               {EXAMPLES.map((ex) => (
                 <button
@@ -350,7 +367,7 @@ function Workspace() {
             </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-2">
-              <Button onClick={run} disabled={streaming || !problem.trim()} className="gap-2">
+              <Button onClick={run} disabled={streaming || (!problem.trim() && !imageDataUrl)} className="gap-2">
                 {streaming ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -368,15 +385,51 @@ function Workspace() {
                   Stop
                 </Button>
               )}
-              {!streaming && (answer || problem) && (
+              {!streaming && (answer || problem || imageDataUrl) && (
                 <Button variant="ghost" onClick={reset} className="gap-2">
                   <RotateCcw className="h-4 w-4" />
                   New
                 </Button>
               )}
-              <div className="ml-auto text-xs text-muted-foreground">
-                <Send className="mr-1 inline h-3 w-3" />
-                Streams token-by-token
+
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onPickImage(f);
+                  e.target.value = "";
+                }}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fileRef.current?.click()}
+                disabled={streaming}
+                className="gap-2"
+                title="Upload a screenshot of the problem"
+              >
+                <ImagePlus className="h-4 w-4" />
+                Image
+              </Button>
+
+              <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
+                <Code2 className="h-3.5 w-3.5" />
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  disabled={streaming}
+                  className="rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                >
+                  <option value="python">Python</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="typescript">TypeScript</option>
+                  <option value="java">Java</option>
+                  <option value="cpp">C++</option>
+                  <option value="go">Go</option>
+                </select>
               </div>
             </div>
           </motion.section>
