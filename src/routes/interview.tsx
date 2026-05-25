@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Loader2, Mic, Square, RotateCcw, Lightbulb } from "lucide-react";
+import { Send, Loader2, Mic, MicOff, Square, RotateCcw, Lightbulb, Volume2, VolumeX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { TutorOutput } from "@/components/TutorOutput";
 import { Nav } from "@/components/site/Nav";
@@ -42,6 +42,89 @@ function Interview() {
   const [hintLoading, setHintLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // ===== Voice (browser-native, optional) =====
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const ttsSupported = typeof window !== "undefined" && "speechSynthesis" in window;
+  const sttSupported =
+    typeof window !== "undefined" &&
+    !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
+
+  function stripForSpeech(md: string) {
+    return md
+      .replace(/```[\s\S]*?```/g, " . code block omitted . ")
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/^#{1,6}\s+/gm, "")
+      .replace(/^\s*[-*]\s+/gm, "")
+      .replace(/\$([^$\n]+)\$/g, "$1")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function speak(text: string) {
+    if (!ttsSupported || !text) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(stripForSpeech(text));
+      u.rate = 1.02;
+      u.pitch = 1;
+      window.speechSynthesis.speak(u);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function stopSpeaking() {
+    if (ttsSupported) window.speechSynthesis.cancel();
+  }
+
+  function toggleListening() {
+    if (!sttSupported) {
+      toast.error("Voice input isn't supported in this browser");
+      return;
+    }
+    if (listening) {
+      recognitionRef.current?.stop?.();
+      return;
+    }
+    const Ctor =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const rec = new Ctor();
+    rec.lang = "en-US";
+    rec.interimResults = true;
+    rec.continuous = false;
+    let finalText = "";
+    rec.onresult = (e: any) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) finalText += r[0].transcript;
+        else interim += r[0].transcript;
+      }
+      setInput((prev) => {
+        // Replace transient interim with current snapshot
+        const base = prev.replace(/\s*\[\.\.\.\][^[]*$/, "");
+        return (base + " " + finalText + (interim ? ` [...]${interim}` : "")).trim();
+      });
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => {
+      setListening(false);
+      setInput((prev) => prev.replace(/\s*\[\.\.\.\][^[]*$/, "").trim());
+    };
+    recognitionRef.current = rec;
+    setListening(true);
+    try {
+      rec.start();
+    } catch {
+      setListening(false);
+    }
+  }
+
+  useEffect(() => () => stopSpeaking(), []);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -119,6 +202,14 @@ function Interview() {
     } finally {
       setStreaming(false);
       abortRef.current = null;
+      if (voiceEnabled) {
+        // Read the just-finished assistant message
+        setMessages((curr) => {
+          const last = curr[curr.length - 1];
+          if (last?.role === "assistant" && last.content) speak(last.content);
+          return curr;
+        });
+      }
     }
   }
 
@@ -135,6 +226,8 @@ function Interview() {
 
   function reset() {
     abortRef.current?.abort();
+    stopSpeaking();
+    recognitionRef.current?.stop?.();
     setTopic(null);
     setMessages([]);
     setHintLevel(0);
@@ -222,6 +315,23 @@ function Interview() {
               <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/40 px-3 py-1.5 text-xs text-muted-foreground">
                 Topic: <span className="text-foreground">{topic}</span>
               </div>
+              {ttsSupported && (
+                <Button
+                  variant={voiceEnabled ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setVoiceEnabled((v) => {
+                      if (v) stopSpeaking();
+                      return !v;
+                    });
+                  }}
+                  className="gap-2"
+                  title={voiceEnabled ? "Mute interviewer voice" : "Hear interviewer voice"}
+                >
+                  {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                  Voice
+                </Button>
+              )}
               <Button variant="ghost" size="sm" onClick={reset} className="gap-2">
                 <RotateCcw className="h-4 w-4" /> End
               </Button>
@@ -319,6 +429,18 @@ function Interview() {
                     }
                   }}
                 />
+                {sttSupported && (
+                  <Button
+                    type="button"
+                    variant={listening ? "default" : "outline"}
+                    onClick={toggleListening}
+                    className="gap-2"
+                    title={listening ? "Stop dictation" : "Dictate with mic"}
+                  >
+                    {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    {listening ? "Stop" : "Mic"}
+                  </Button>
+                )}
                 <Button type="submit" disabled={streaming || !input.trim()} className="gap-2">
                   {streaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   Send
