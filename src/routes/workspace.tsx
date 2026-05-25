@@ -335,7 +335,23 @@ function Workspace() {
             <Textarea
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
-              placeholder="Paste a problem here, e.g. 'Find two numbers in an array that sum to target...'"
+              onPaste={(e) => {
+                const items = e.clipboardData?.items;
+                if (!items) return;
+                for (let i = 0; i < items.length; i++) {
+                  const it = items[i];
+                  if (it.kind === "file" && it.type.startsWith("image/")) {
+                    const f = it.getAsFile();
+                    if (f) {
+                      e.preventDefault();
+                      onPickImage(f);
+                      toast.success("Image pasted");
+                      return;
+                    }
+                  }
+                }
+              }}
+              placeholder="Paste a problem here (or paste a screenshot directly — Ctrl/Cmd+V)…"
               className="mt-2 min-h-[220px] resize-none border-border/60 bg-background/40 font-mono text-sm leading-relaxed"
             />
 
