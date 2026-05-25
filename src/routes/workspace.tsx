@@ -72,6 +72,7 @@ function deriveTitle(problem: string): string {
 
 function Workspace() {
   const { user, loading } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const search = Route.useSearch();
   const [problem, setProblem] = useState("");
@@ -83,6 +84,9 @@ function Workspace() {
   const [noteDraft, setNoteDraft] = useState("");
   const [showNotes, setShowNotes] = useState(false);
   const [language, setLanguage] = useState<string>("python");
+  const [mode, setMode] = useState<string>("intermediate");
+  const [languageTouched, setLanguageTouched] = useState(false);
+  const [modeTouched, setModeTouched] = useState(false);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
