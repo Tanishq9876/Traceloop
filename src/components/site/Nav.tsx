@@ -13,9 +13,9 @@ export function Nav() {
         <Logo />
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
           <Link to="/workspace" className="hover:text-foreground transition-colors">Workspace</Link>
+          <Link to="/interview" className="hover:text-foreground transition-colors">Interview</Link>
           <Link to="/visualizers" className="hover:text-foreground transition-colors">Visualizers</Link>
           <a href="/#features" className="hover:text-foreground transition-colors">Features</a>
-          <a href="/#faq" className="hover:text-foreground transition-colors">FAQ</a>
         </nav>
         <div className="flex items-center gap-2">
           {loading ? null : user ? (

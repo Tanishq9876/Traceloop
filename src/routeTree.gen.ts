@@ -12,12 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as VisualizersRouteImport } from './routes/visualizers'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as InterviewRouteImport } from './routes/interview'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VisualizersSlugRouteImport } from './routes/visualizers.$slug'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
+import { Route as ApiInterviewRouteImport } from './routes/api/interview'
+import { Route as ApiHintRouteImport } from './routes/api/hint'
 
 const WorkspaceRoute = WorkspaceRouteImport.update({
   id: '/workspace',
@@ -32,6 +35,11 @@ const VisualizersRoute = VisualizersRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InterviewRoute = InterviewRouteImport.update({
+  id: '/interview',
+  path: '/interview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -64,15 +72,28 @@ const ApiTutorRoute = ApiTutorRouteImport.update({
   path: '/api/tutor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiInterviewRoute = ApiInterviewRouteImport.update({
+  id: '/api/interview',
+  path: '/api/interview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHintRoute = ApiHintRouteImport.update({
+  id: '/api/hint',
+  path: '/api/hint',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/interview': typeof InterviewRoute
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/hint': typeof ApiHintRoute
+  '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
   '/visualizers/$slug': typeof VisualizersSlugRoute
 }
@@ -81,9 +102,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/interview': typeof InterviewRoute
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/hint': typeof ApiHintRoute
+  '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
   '/visualizers/$slug': typeof VisualizersSlugRoute
 }
@@ -93,9 +117,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/interview': typeof InterviewRoute
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/hint': typeof ApiHintRoute
+  '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
   '/visualizers/$slug': typeof VisualizersSlugRoute
 }
@@ -106,9 +133,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/history'
+    | '/interview'
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/hint'
+    | '/api/interview'
     | '/api/tutor'
     | '/visualizers/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -117,9 +147,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/history'
+    | '/interview'
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/hint'
+    | '/api/interview'
     | '/api/tutor'
     | '/visualizers/$slug'
   id:
@@ -128,9 +161,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/history'
+    | '/interview'
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/hint'
+    | '/api/interview'
     | '/api/tutor'
     | '/visualizers/$slug'
   fileRoutesById: FileRoutesById
@@ -140,9 +176,12 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   HistoryRoute: typeof HistoryRoute
+  InterviewRoute: typeof InterviewRoute
   ProfileRoute: typeof ProfileRoute
   VisualizersRoute: typeof VisualizersRouteWithChildren
   WorkspaceRoute: typeof WorkspaceRoute
+  ApiHintRoute: typeof ApiHintRoute
+  ApiInterviewRoute: typeof ApiInterviewRoute
   ApiTutorRoute: typeof ApiTutorRoute
 }
 
@@ -167,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interview': {
+      id: '/interview'
+      path: '/interview'
+      fullPath: '/interview'
+      preLoaderRoute: typeof InterviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -211,6 +257,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTutorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/interview': {
+      id: '/api/interview'
+      path: '/api/interview'
+      fullPath: '/api/interview'
+      preLoaderRoute: typeof ApiInterviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hint': {
+      id: '/api/hint'
+      path: '/api/hint'
+      fullPath: '/api/hint'
+      preLoaderRoute: typeof ApiHintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -231,9 +291,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   HistoryRoute: HistoryRoute,
+  InterviewRoute: InterviewRoute,
   ProfileRoute: ProfileRoute,
   VisualizersRoute: VisualizersRouteWithChildren,
   WorkspaceRoute: WorkspaceRoute,
+  ApiHintRoute: ApiHintRoute,
+  ApiInterviewRoute: ApiInterviewRoute,
   ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport

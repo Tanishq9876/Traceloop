@@ -9,6 +9,10 @@ import { BFSViz } from "@/components/visualizers/BFSViz";
 import { DFSViz } from "@/components/visualizers/DFSViz";
 import { RecursionTreeViz } from "@/components/visualizers/RecursionTreeViz";
 import { DPGridViz } from "@/components/visualizers/DPGridViz";
+import { QueueViz } from "@/components/visualizers/QueueViz";
+import { HeapViz } from "@/components/visualizers/HeapViz";
+import { LinkedListViz } from "@/components/visualizers/LinkedListViz";
+import { TreeTraversalViz } from "@/components/visualizers/TreeTraversalViz";
 import { VIZ_LIST } from "./visualizers";
 
 const REGISTRY: Record<string, { title: string; node: React.ReactNode; blurb: string }> = {
@@ -59,6 +63,30 @@ const REGISTRY: Record<string, { title: string; node: React.ReactNode; blurb: st
     blurb:
       "Count paths from top-left to bottom-right moving only right or down. Each cell equals the cell above plus the cell to the left — a classic bottom-up DP recurrence.",
     node: <DPGridViz />,
+  },
+  queue: {
+    title: "Queue — FIFO",
+    blurb:
+      "A queue serves items in the order they arrived (first-in, first-out). It's the backbone of BFS, task schedulers, and producer/consumer pipelines.",
+    node: <QueueViz />,
+  },
+  heap: {
+    title: "Min-Heap — Sift Up",
+    blurb:
+      "A binary heap is a complete tree stored in an array. After inserting at the end, sift up — swap with parent while smaller — to restore the heap invariant in O(log n).",
+    node: <HeapViz />,
+  },
+  "linked-list": {
+    title: "Reverse a Linked List",
+    blurb:
+      "Walk the list with three pointers: prev, curr, next. At each step save next, flip curr.next to prev, then advance. Ends with prev as the new head.",
+    node: <LinkedListViz />,
+  },
+  "tree-traversal": {
+    title: "Tree — Iterative In-Order",
+    blurb:
+      "In-order traversal visits left subtree, then node, then right. Done iteratively with an explicit stack: dive left, pop and visit, then dive right.",
+    node: <TreeTraversalViz />,
   },
 };
 
