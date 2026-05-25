@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Loader2, Mic, Square, RotateCcw, Lightbulb } from "lucide-react";
+import { Send, Loader2, Mic, MicOff, Square, RotateCcw, Lightbulb, Volume2, VolumeX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { TutorOutput } from "@/components/TutorOutput";
 import { Nav } from "@/components/site/Nav";
