@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as VisualizersRouteImport } from './routes/visualizers'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -25,6 +27,16 @@ const WorkspaceRoute = WorkspaceRouteImport.update({
 const VisualizersRoute = VisualizersRouteImport.update({
   id: '/visualizers',
   path: '/visualizers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -57,6 +69,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
+  '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -66,6 +80,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
+  '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -76,6 +92,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
+  '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -87,6 +105,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/history'
+    | '/profile'
     | '/visualizers'
     | '/workspace'
     | '/api/tutor'
@@ -96,6 +116,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/history'
+    | '/profile'
     | '/visualizers'
     | '/workspace'
     | '/api/tutor'
@@ -105,6 +127,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/history'
+    | '/profile'
     | '/visualizers'
     | '/workspace'
     | '/api/tutor'
@@ -115,6 +139,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
+  HistoryRoute: typeof HistoryRoute
+  ProfileRoute: typeof ProfileRoute
   VisualizersRoute: typeof VisualizersRouteWithChildren
   WorkspaceRoute: typeof WorkspaceRoute
   ApiTutorRoute: typeof ApiTutorRoute
@@ -134,6 +160,20 @@ declare module '@tanstack/react-router' {
       path: '/visualizers'
       fullPath: '/visualizers'
       preLoaderRoute: typeof VisualizersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -190,6 +230,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
+  HistoryRoute: HistoryRoute,
+  ProfileRoute: ProfileRoute,
   VisualizersRoute: VisualizersRouteWithChildren,
   WorkspaceRoute: WorkspaceRoute,
   ApiTutorRoute: ApiTutorRoute,
