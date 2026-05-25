@@ -81,6 +81,7 @@ function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
   const [language, setLanguage] = useState<string>("python");
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const outputRef = useRef<HTMLDivElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
