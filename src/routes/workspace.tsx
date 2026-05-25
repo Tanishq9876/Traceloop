@@ -16,6 +16,8 @@ import {
   ImagePlus,
   X,
   Code2,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
