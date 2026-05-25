@@ -230,7 +230,19 @@ function Workspace() {
     setSessionId(null);
     setBookmarked(false);
     setNotes([]);
+    setImageDataUrl(null);
     navigate({ to: "/workspace", search: {}, replace: true });
+  }
+
+  function onPickImage(file: File) {
+    if (file.size > 4 * 1024 * 1024) {
+      toast.error("Image too large (max 4MB)");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setImageDataUrl(reader.result as string);
+    reader.onerror = () => toast.error("Could not read image");
+    reader.readAsDataURL(file);
   }
 
   async function onToggleBookmark() {
