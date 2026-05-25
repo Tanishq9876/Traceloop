@@ -89,8 +89,13 @@ function Workspace() {
   const [modeTouched, setModeTouched] = useState(false);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [followups, setFollowups] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
+  const [followupDraft, setFollowupDraft] = useState("");
+  const [followupStreaming, setFollowupStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const followupAbortRef = useRef<AbortController | null>(null);
   const outputRef = useRef<HTMLDivElement | null>(null);
+  const followupRef = useRef<HTMLDivElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   const createSessionFn = useServerFn(createSession);
