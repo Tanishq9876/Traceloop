@@ -315,6 +315,23 @@ function Interview() {
               <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/40 px-3 py-1.5 text-xs text-muted-foreground">
                 Topic: <span className="text-foreground">{topic}</span>
               </div>
+              {ttsSupported && (
+                <Button
+                  variant={voiceEnabled ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    setVoiceEnabled((v) => {
+                      if (v) stopSpeaking();
+                      return !v;
+                    });
+                  }}
+                  className="gap-2"
+                  title={voiceEnabled ? "Mute interviewer voice" : "Hear interviewer voice"}
+                >
+                  {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                  Voice
+                </Button>
+              )}
               <Button variant="ghost" size="sm" onClick={reset} className="gap-2">
                 <RotateCcw className="h-4 w-4" /> End
               </Button>
