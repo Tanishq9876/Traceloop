@@ -213,6 +213,8 @@ function Workspace() {
               problem,
               response: finalText,
               pattern,
+              mode,
+              language,
             },
           });
           if (session?.id) {
