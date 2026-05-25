@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as VisualizersRouteImport } from './routes/visualizers'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as InterviewRouteImport } from './routes/interview'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -34,6 +35,11 @@ const VisualizersRoute = VisualizersRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InterviewRoute = InterviewRouteImport.update({
+  id: '/interview',
+  path: '/interview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/interview': typeof InterviewRoute
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/interview': typeof InterviewRoute
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/interview': typeof InterviewRoute
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/history'
+    | '/interview'
     | '/profile'
     | '/visualizers'
     | '/workspace'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/history'
+    | '/interview'
     | '/profile'
     | '/visualizers'
     | '/workspace'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/history'
+    | '/interview'
     | '/profile'
     | '/visualizers'
     | '/workspace'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   HistoryRoute: typeof HistoryRoute
+  InterviewRoute: typeof InterviewRoute
   ProfileRoute: typeof ProfileRoute
   VisualizersRoute: typeof VisualizersRouteWithChildren
   WorkspaceRoute: typeof WorkspaceRoute
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interview': {
+      id: '/interview'
+      path: '/interview'
+      fullPath: '/interview'
+      preLoaderRoute: typeof InterviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -271,6 +291,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   HistoryRoute: HistoryRoute,
+  InterviewRoute: InterviewRoute,
   ProfileRoute: ProfileRoute,
   VisualizersRoute: VisualizersRouteWithChildren,
   WorkspaceRoute: WorkspaceRoute,
@@ -281,3 +302,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

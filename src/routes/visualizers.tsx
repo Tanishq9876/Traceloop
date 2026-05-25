@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeftRight, Crosshair, Layers, Search, Network, GitBranch, Workflow, Grid3x3 } from "lucide-react";
+import { ArrowLeftRight, Crosshair, Layers, Search, Network, GitBranch, Workflow, Grid3x3, ListOrdered, Mountain, Link2, TreeDeciduous } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 
 export const Route = createFileRoute("/visualizers")({
@@ -56,6 +56,30 @@ export const VIZ_LIST = [
     title: "DP — Unique Paths",
     desc: "Fill a grid bottom-up with recurrences.",
     icon: Grid3x3,
+  },
+  {
+    slug: "queue",
+    title: "Queue — FIFO",
+    desc: "Enqueue at back, dequeue at front.",
+    icon: ListOrdered,
+  },
+  {
+    slug: "heap",
+    title: "Min-Heap — Sift Up",
+    desc: "Insert and bubble up to keep heap order.",
+    icon: Mountain,
+  },
+  {
+    slug: "linked-list",
+    title: "Reverse Linked List",
+    desc: "Flip every pointer using prev / curr / next.",
+    icon: Link2,
+  },
+  {
+    slug: "tree-traversal",
+    title: "Tree — In-Order Traversal",
+    desc: "Iterative left → node → right with a stack.",
+    icon: TreeDeciduous,
   },
 ];
 
