@@ -18,14 +18,23 @@ export const Route = createFileRoute("/interview")({
 type Msg = { role: "user" | "assistant"; content: string; hidden?: boolean };
 
 const TOPICS = [
-  "Arrays & two pointers",
-  "Sliding window",
-  "Hash maps",
-  "Binary search",
-  "Trees / BST",
-  "Graphs / BFS-DFS",
-  "Dynamic programming",
+  "Sorting",
+  "Arrays",
+  "Binary Search",
+  "Strings",
+  "Linked List",
+  "Recursion",
+  "Bit Manipulation",
+  "Stack and Queues",
+  "Sliding Window & Two Pointers",
   "Heaps",
+  "Greedy Algorithms",
+  "Binary Trees",
+  "Binary Search Trees",
+  "Graphs",
+  "Dynamic Programming",
+  "Tries",
+  "Strings Advanced",
 ];
 
 
