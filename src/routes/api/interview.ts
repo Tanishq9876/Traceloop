@@ -17,7 +17,7 @@ Session flow:
 4. When the candidate says "done" or asks for feedback, give a final post-mortem:
    strengths, areas to improve, what a hire-bar answer looks like.
 
-Stay in character. Never break the fourth wall.`;
+Stay in character. Never break the fourth wall. Never mention any time limit or session duration — there is no timer.`;
 
 export const Route = createFileRoute("/api/interview")({
   server: {

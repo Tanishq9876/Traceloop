@@ -14,7 +14,7 @@ export const Route = createFileRoute("/interview")({
   head: () => ({ meta: [{ title: "Mock Interview — Traceloop" }] }),
 });
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; hidden?: boolean };
 
 const TOPICS = [
   "Arrays & two pointers",
@@ -51,9 +51,9 @@ function Interview() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, streaming]);
 
-  async function send(text: string) {
+  async function send(text: string, opts: { hidden?: boolean } = {}) {
     if (!text.trim() || streaming) return;
-    const userMsg: Msg = { role: "user", content: text.trim() };
+    const userMsg: Msg = { role: "user", content: text.trim(), hidden: opts.hidden };
     const nextHistory = [...messages, userMsg];
     setMessages([...nextHistory, { role: "assistant", content: "" }]);
     setInput("");
@@ -64,7 +64,9 @@ function Interview() {
       const resp = await fetch("/api/interview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextHistory }),
+        body: JSON.stringify({
+          messages: nextHistory.map(({ role, content }) => ({ role, content })),
+        }),
         signal: controller.signal,
       });
       if (!resp.ok || !resp.body) {
@@ -125,7 +127,8 @@ function Interview() {
     setHintLevel(0);
     setHintText("");
     void send(
-      `Start a mock interview. Topic focus: ${t}. Please greet me briefly and present one problem appropriate for a 30-minute session.`
+      `Begin the mock interview. Topic focus: ${t}. Greet me briefly and present one well-scoped problem. Do not mention any time limit.`,
+      { hidden: true }
     );
   }
 
@@ -272,7 +275,7 @@ function Interview() {
                 ref={scrollRef}
                 className="flex-1 space-y-4 overflow-y-auto rounded-xl border border-border/60 bg-background/40 p-5"
               >
-                {messages.map((m, i) => (
+                {messages.filter((m) => !m.hidden).map((m, i) => (
                   <div
                     key={i}
                     className={[
