@@ -9,10 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkspaceRouteImport } from './routes/workspace'
+import { Route as VisualizersRouteImport } from './routes/visualizers'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VisualizersSlugRouteImport } from './routes/visualizers.$slug'
+import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 
+const WorkspaceRoute = WorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisualizersRoute = VisualizersRouteImport.update({
+  id: '/visualizers',
+  path: '/visualizers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -28,39 +42,100 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VisualizersSlugRoute = VisualizersSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => VisualizersRoute,
+} as any)
+const ApiTutorRoute = ApiTutorRouteImport.update({
+  id: '/api/tutor',
+  path: '/api/tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/visualizers': typeof VisualizersRouteWithChildren
+  '/workspace': typeof WorkspaceRoute
+  '/api/tutor': typeof ApiTutorRoute
+  '/visualizers/$slug': typeof VisualizersSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/visualizers': typeof VisualizersRouteWithChildren
+  '/workspace': typeof WorkspaceRoute
+  '/api/tutor': typeof ApiTutorRoute
+  '/visualizers/$slug': typeof VisualizersSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/visualizers': typeof VisualizersRouteWithChildren
+  '/workspace': typeof WorkspaceRoute
+  '/api/tutor': typeof ApiTutorRoute
+  '/visualizers/$slug': typeof VisualizersSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/visualizers'
+    | '/workspace'
+    | '/api/tutor'
+    | '/visualizers/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard'
-  id: '__root__' | '/' | '/auth' | '/dashboard'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/visualizers'
+    | '/workspace'
+    | '/api/tutor'
+    | '/visualizers/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/visualizers'
+    | '/workspace'
+    | '/api/tutor'
+    | '/visualizers/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
+  VisualizersRoute: typeof VisualizersRouteWithChildren
+  WorkspaceRoute: typeof WorkspaceRoute
+  ApiTutorRoute: typeof ApiTutorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workspace': {
+      id: '/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof WorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/visualizers': {
+      id: '/visualizers'
+      path: '/visualizers'
+      fullPath: '/visualizers'
+      preLoaderRoute: typeof VisualizersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -82,14 +157,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/visualizers/$slug': {
+      id: '/visualizers/$slug'
+      path: '/$slug'
+      fullPath: '/visualizers/$slug'
+      preLoaderRoute: typeof VisualizersSlugRouteImport
+      parentRoute: typeof VisualizersRoute
+    }
+    '/api/tutor': {
+      id: '/api/tutor'
+      path: '/api/tutor'
+      fullPath: '/api/tutor'
+      preLoaderRoute: typeof ApiTutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
+
+interface VisualizersRouteChildren {
+  VisualizersSlugRoute: typeof VisualizersSlugRoute
+}
+
+const VisualizersRouteChildren: VisualizersRouteChildren = {
+  VisualizersSlugRoute: VisualizersSlugRoute,
+}
+
+const VisualizersRouteWithChildren = VisualizersRoute._addFileChildren(
+  VisualizersRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
+  VisualizersRoute: VisualizersRouteWithChildren,
+  WorkspaceRoute: WorkspaceRoute,
+  ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
