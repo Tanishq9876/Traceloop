@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Send, Loader2, Mic, Square, RotateCcw, Lightbulb } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { TutorOutput } from "@/components/TutorOutput";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
