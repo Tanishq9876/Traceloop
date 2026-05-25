@@ -11,7 +11,7 @@ import {
   Gauge,
   MessageSquare,
   ArrowRight,
-  Check,
+  
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
