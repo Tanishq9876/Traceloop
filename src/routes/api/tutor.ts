@@ -80,6 +80,28 @@ Provide a **LeetCode-ready** ${lang} solution in a \`\`\`${fenceLang} code block
 Keep every bullet tight. Prioritize intuition over jargon. Never skip a section.`;
 }
 
+function followupSystemPrompt(language: string, mode: string) {
+  const lang = LANG_NAMES[language] ?? "Python";
+  const fenceLang =
+    language === "cpp" ? "cpp" : language === "typescript" ? "ts" : language;
+  const modeLine = MODE_INSTRUCTIONS[mode] ?? MODE_INSTRUCTIONS.intermediate;
+  return `You are Traceloop, an elite DSA tutor answering a follow-up question in an ongoing chat. The earlier messages contain the original problem and your structured 7-section breakdown.
+
+${modeLine}
+
+Answer the user's follow-up directly and conversationally — like ChatGPT.
+
+FORMAT RULES:
+- Be concise. No fixed section headers, no "## 1. Intuition" etc.
+- Prefer **bullet points** ("- ") over long paragraphs. Each bullet = one idea, <= 25 words.
+- Use **bold** for key terms, inline \`code\` for variables/expressions.
+- If code is needed, use a \`\`\`${fenceLang} block with LeetCode-ready ${lang} (\`class Solution\`, no driver/main/imports unless required).
+- If a small table clarifies something, use a markdown table.
+- Skip filler. Get to the point.`;
+}
+
+
+
 export const Route = createFileRoute("/api/tutor")({
   server: {
     handlers: {
@@ -90,9 +112,10 @@ export const Route = createFileRoute("/api/tutor")({
             language?: string;
             mode?: string;
             imageDataUrl?: string;
+            followup?: boolean;
             messages?: Array<{ role: "user" | "assistant"; content: string }>;
           };
-          const { problem, language = "python", mode = "intermediate", imageDataUrl, messages: history } = body;
+          const { problem, language = "python", mode = "intermediate", imageDataUrl, followup, messages: history } = body;
 
           const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
           if (!LOVABLE_API_KEY) {
@@ -135,7 +158,12 @@ export const Route = createFileRoute("/api/tutor")({
                 model,
                 stream: true,
                 messages: [
-                  { role: "system", content: systemPrompt(language, mode) },
+                  {
+                    role: "system",
+                    content: followup
+                      ? followupSystemPrompt(language, mode)
+                      : systemPrompt(language, mode),
+                  },
                   ...messages,
                 ],
               }),

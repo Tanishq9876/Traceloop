@@ -89,8 +89,13 @@ function Workspace() {
   const [modeTouched, setModeTouched] = useState(false);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [followups, setFollowups] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
+  const [followupDraft, setFollowupDraft] = useState("");
+  const [followupStreaming, setFollowupStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const followupAbortRef = useRef<AbortController | null>(null);
   const outputRef = useRef<HTMLDivElement | null>(null);
+  const followupRef = useRef<HTMLDivElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   const createSessionFn = useServerFn(createSession);
@@ -123,6 +128,7 @@ function Workspace() {
           setSessionId(session.id);
           setProblem(session.problem);
           setAnswer(session.response ?? "");
+          setFollowups([]);
           const [{ bookmarked: b }, { notes: n }] = await Promise.all([
             isBookmarkedSrv({ data: { session_id: session.id } }),
             listNotesFn({ data: { session_id: session.id } }),
@@ -250,7 +256,91 @@ function Workspace() {
     setBookmarked(false);
     setNotes([]);
     setImageDataUrl(null);
+    setFollowups([]);
+    setFollowupDraft("");
     navigate({ to: "/workspace", search: {}, replace: true });
+  }
+
+  async function askFollowup() {
+    const q = followupDraft.trim();
+    if (!q || followupStreaming || !answer) return;
+    const newHistory: Array<{ role: "user" | "assistant"; content: string }> = [
+      { role: "user", content: problem || "(problem from image)" },
+      { role: "assistant", content: answer },
+      ...followups,
+      { role: "user", content: q },
+    ];
+    setFollowups((f) => [...f, { role: "user", content: q }, { role: "assistant", content: "" }]);
+    setFollowupDraft("");
+    setFollowupStreaming(true);
+    const controller = new AbortController();
+    followupAbortRef.current = controller;
+
+    try {
+      const resp = await fetch("/api/tutor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language, mode, followup: true, messages: newHistory }),
+        signal: controller.signal,
+      });
+      if (!resp.ok || !resp.body) {
+        const errBody = await resp.json().catch(() => ({}));
+        toast.error(errBody.error ?? "Follow-up failed");
+        setFollowups((f) => f.slice(0, -1));
+        setFollowupStreaming(false);
+        return;
+      }
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      let done = false;
+      while (!done) {
+        const { value, done: d } = await reader.read();
+        if (d) break;
+        buf += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buf.indexOf("\n")) !== -1) {
+          let line = buf.slice(0, idx);
+          buf = buf.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") { done = true; break; }
+          try {
+            const p = JSON.parse(json);
+            const delta = p.choices?.[0]?.delta?.content as string | undefined;
+            if (delta) {
+              setFollowups((f) => {
+                const copy = [...f];
+                const last = copy[copy.length - 1];
+                if (last && last.role === "assistant") {
+                  copy[copy.length - 1] = { ...last, content: last.content + delta };
+                }
+                return copy;
+              });
+              if (followupRef.current) {
+                followupRef.current.scrollTop = followupRef.current.scrollHeight;
+              }
+            }
+          } catch {
+            buf = line + "\n" + buf;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") {
+        toast.error("Follow-up stream failed");
+      }
+    } finally {
+      setFollowupStreaming(false);
+      followupAbortRef.current = null;
+    }
+  }
+
+  function stopFollowup() {
+    followupAbortRef.current?.abort();
+    setFollowupStreaming(false);
   }
 
   function onPickImage(file: File) {
@@ -551,6 +641,84 @@ function Workspace() {
                 </div>
               )}
             </div>
+
+            {answer && (
+              <div className="mt-4 rounded-xl border border-border/60 bg-background/30 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Follow-up questions
+                  </div>
+                  {followups.length > 0 && (
+                    <button
+                      onClick={() => setFollowups([])}
+                      className="text-[11px] text-muted-foreground hover:text-foreground"
+                    >
+                      Clear chat
+                    </button>
+                  )}
+                </div>
+
+                {followups.length > 0 && (
+                  <div
+                    ref={followupRef}
+                    className="mt-3 max-h-[420px] space-y-3 overflow-y-auto pr-1"
+                  >
+                    {followups.map((m, i) => (
+                      <div
+                        key={i}
+                        className={
+                          m.role === "user"
+                            ? "ml-auto max-w-[85%] rounded-2xl rounded-tr-sm border border-primary/30 bg-primary/10 px-3.5 py-2 text-sm text-foreground"
+                            : "mr-auto max-w-[92%] rounded-2xl rounded-tl-sm border border-border/60 bg-background/60 px-3.5 py-2.5 text-sm"
+                        }
+                      >
+                        {m.role === "user" ? (
+                          <div className="whitespace-pre-wrap">{m.content}</div>
+                        ) : m.content ? (
+                          <TutorOutput text={m.content} />
+                        ) : (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            Thinking…
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-3 flex gap-2">
+                  <Input
+                    value={followupDraft}
+                    onChange={(e) => setFollowupDraft(e.target.value)}
+                    placeholder="Ask a follow-up… (e.g. why is this O(n)? show a Java version)"
+                    disabled={followupStreaming}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        askFollowup();
+                      }
+                    }}
+                    className="border-border/60 bg-background/60"
+                  />
+                  {followupStreaming ? (
+                    <Button variant="outline" onClick={stopFollowup}>
+                      Stop
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={askFollowup}
+                      disabled={!followupDraft.trim()}
+                      className="gap-1.5"
+                    >
+                      <Send className="h-4 w-4" />
+                      Ask
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
 
             {sessionId && showNotes && (
               <div className="mt-4 rounded-xl border border-border/60 bg-background/30 p-4">
