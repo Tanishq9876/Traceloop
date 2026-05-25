@@ -88,10 +88,11 @@ export const Route = createFileRoute("/api/tutor")({
           const body = (await request.json()) as {
             problem?: string;
             language?: string;
+            mode?: string;
             imageDataUrl?: string;
             messages?: Array<{ role: "user" | "assistant"; content: string }>;
           };
-          const { problem, language = "python", imageDataUrl, messages: history } = body;
+          const { problem, language = "python", mode = "intermediate", imageDataUrl, messages: history } = body;
 
           const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
           if (!LOVABLE_API_KEY) {
