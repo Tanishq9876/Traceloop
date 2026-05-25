@@ -15,6 +15,7 @@ export function Nav() {
           <Link to="/workspace" className="hover:text-foreground transition-colors">Workspace</Link>
           <Link to="/interview" className="hover:text-foreground transition-colors">Interview</Link>
           <Link to="/visualizers" className="hover:text-foreground transition-colors">Visualizers</Link>
+          <Link to="/practice" className="hover:text-foreground transition-colors">Practice</Link>
           <a href="/#features" className="hover:text-foreground transition-colors">Features</a>
         </nav>
         <div className="flex items-center gap-2">
