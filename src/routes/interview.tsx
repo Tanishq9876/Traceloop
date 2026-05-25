@@ -14,7 +14,7 @@ export const Route = createFileRoute("/interview")({
   head: () => ({ meta: [{ title: "Mock Interview — Traceloop" }] }),
 });
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; hidden?: boolean };
 
 const TOPICS = [
   "Arrays & two pointers",
