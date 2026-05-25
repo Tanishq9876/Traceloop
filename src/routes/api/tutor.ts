@@ -136,7 +136,12 @@ export const Route = createFileRoute("/api/tutor")({
                 model,
                 stream: true,
                 messages: [
-                  { role: "system", content: systemPrompt(language, mode) },
+                  {
+                    role: "system",
+                    content: followup
+                      ? followupSystemPrompt(language, mode)
+                      : systemPrompt(language, mode),
+                  },
                   ...messages,
                 ],
               }),
