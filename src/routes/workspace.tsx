@@ -16,6 +16,8 @@ import {
   ImagePlus,
   X,
   Code2,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
@@ -79,6 +81,7 @@ function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
   const [language, setLanguage] = useState<string>("python");
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const outputRef = useRef<HTMLDivElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -294,7 +297,7 @@ function Workspace() {
       <div className="grid-bg pointer-events-none absolute inset-0 -z-10" aria-hidden />
       <Nav />
 
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <main className={`mx-auto px-4 py-8 ${expanded ? "max-w-[1600px]" : "max-w-7xl"}`}>
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Problem workspace</h1>
@@ -318,13 +321,13 @@ function Workspace() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className={`grid grid-cols-1 gap-6 ${expanded ? "" : "lg:grid-cols-2"}`}>
           {/* Input */}
           <motion.section
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="glass flex flex-col rounded-2xl p-5"
+            className={`glass flex-col rounded-2xl p-5 ${expanded ? "hidden" : "flex"}`}
           >
             <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Problem statement
@@ -439,38 +442,54 @@ function Workspace() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.05 }}
-            className="glass flex min-h-[400px] flex-col rounded-2xl p-5"
+            className={`glass flex flex-col rounded-2xl p-5 ${expanded ? "min-h-[calc(100vh-9rem)]" : "min-h-[400px]"}`}
           >
             <div className="flex items-center justify-between">
               <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Structured explanation
               </label>
-              {sessionId && (
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowNotes((s) => !s)}
-                    className="gap-1.5 text-xs"
-                  >
-                    <StickyNote className="h-3.5 w-3.5" />
-                    Notes {notes.length > 0 && `(${notes.length})`}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onToggleBookmark}
-                    className="gap-1.5 text-xs"
-                  >
-                    {bookmarked ? (
-                      <BookmarkCheck className="h-3.5 w-3.5 text-primary" />
-                    ) : (
-                      <Bookmark className="h-3.5 w-3.5" />
-                    )}
-                    {bookmarked ? "Saved" : "Save"}
-                  </Button>
-                </div>
-              )}
+              <div className="flex gap-1">
+                {sessionId && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowNotes((s) => !s)}
+                      className="gap-1.5 text-xs"
+                    >
+                      <StickyNote className="h-3.5 w-3.5" />
+                      Notes {notes.length > 0 && `(${notes.length})`}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onToggleBookmark}
+                      className="gap-1.5 text-xs"
+                    >
+                      {bookmarked ? (
+                        <BookmarkCheck className="h-3.5 w-3.5 text-primary" />
+                      ) : (
+                        <Bookmark className="h-3.5 w-3.5" />
+                      )}
+                      {bookmarked ? "Saved" : "Save"}
+                    </Button>
+                  </>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setExpanded((e) => !e)}
+                  className="gap-1.5 text-xs"
+                  title={expanded ? "Exit full view" : "Full view"}
+                >
+                  {expanded ? (
+                    <Minimize2 className="h-3.5 w-3.5" />
+                  ) : (
+                    <Maximize2 className="h-3.5 w-3.5" />
+                  )}
+                  {expanded ? "Exit" : "Focus"}
+                </Button>
+              </div>
             </div>
             <div
               ref={outputRef}
@@ -540,7 +559,7 @@ function Workspace() {
   );
 }
 
-/** Light-weight markdown renderer for the tutor output (headings, lists, code, bold). */
+/** Light-weight markdown renderer for the tutor output (headings, lists, code, bold, tables). */
 function TutorOutput({ text }: { text: string }) {
   const blocks = text.split(/(```[\s\S]*?```)/g);
   return (
@@ -558,43 +577,107 @@ function TutorOutput({ text }: { text: string }) {
             </pre>
           );
         }
-        return block.split("\n").map((line, j) => {
-          const key = `${i}-${j}`;
-          if (!line.trim()) return <div key={key} className="h-1" />;
-          if (line.startsWith("## ")) {
-            return (
-              <h3 key={key} className="mt-4 text-base font-semibold text-foreground">
-                {inlineFmt(line.slice(3))}
-              </h3>
-            );
-          }
-          if (line.startsWith("# ")) {
-            return (
-              <h2 key={key} className="text-lg font-semibold text-foreground">
-                {inlineFmt(line.slice(2))}
-              </h2>
-            );
-          }
-          if (/^\s*[-*]\s+/.test(line)) {
-            return (
-              <div key={key} className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span>{inlineFmt(line.replace(/^\s*[-*]\s+/, ""))}</span>
-              </div>
-            );
-          }
-          if (/^\s*\d+\.\s+/.test(line)) {
-            return (
-              <div key={key} className="pl-1">
-                {inlineFmt(line)}
-              </div>
-            );
-          }
-          return <p key={key}>{inlineFmt(line)}</p>;
-        });
+        return renderProse(block, i);
       })}
     </div>
   );
+}
+
+function splitRow(line: string): string[] {
+  const trimmed = line.trim().replace(/^\|/, "").replace(/\|$/, "");
+  return trimmed.split("|").map((c) => c.trim());
+}
+
+function renderProse(block: string, bi: number) {
+  const lines = block.split("\n");
+  const out: React.ReactNode[] = [];
+  let k = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    // Detect markdown table: header `| ... |` followed by separator `| --- |`
+    if (
+      /^\s*\|.*\|\s*$/.test(line) &&
+      i + 1 < lines.length &&
+      /^\s*\|?\s*:?-{2,}.*\|/.test(lines[i + 1])
+    ) {
+      const header = splitRow(line);
+      const rows: string[][] = [];
+      let j = i + 2;
+      while (j < lines.length && /^\s*\|.*\|\s*$/.test(lines[j])) {
+        rows.push(splitRow(lines[j]));
+        j++;
+      }
+      out.push(
+        <div key={`${bi}-t-${k++}`} className="my-2 overflow-x-auto rounded-lg border border-border/60">
+          <table className="w-full border-collapse text-xs">
+            <thead className="bg-primary/10">
+              <tr>
+                {header.map((h, x) => (
+                  <th key={x} className="border-b border-border/60 px-3 py-2 text-left font-semibold text-foreground">
+                    {inlineFmt(h)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, y) => (
+                <tr key={y} className="even:bg-background/40">
+                  {r.map((c, x) => (
+                    <td key={x} className="border-b border-border/30 px-3 py-2 align-top font-mono text-[0.8rem] text-foreground/90">
+                      {inlineFmt(c)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      i = j - 1;
+      continue;
+    }
+
+    const key = `${bi}-${k++}`;
+    if (!line.trim()) {
+      out.push(<div key={key} className="h-1" />);
+      continue;
+    }
+    if (line.startsWith("## ")) {
+      out.push(
+        <h3 key={key} className="mt-4 text-base font-semibold text-foreground">
+          {inlineFmt(line.slice(3))}
+        </h3>
+      );
+      continue;
+    }
+    if (line.startsWith("# ")) {
+      out.push(
+        <h2 key={key} className="text-lg font-semibold text-foreground">
+          {inlineFmt(line.slice(2))}
+        </h2>
+      );
+      continue;
+    }
+    if (/^\s*[-*]\s+/.test(line)) {
+      out.push(
+        <div key={key} className="flex gap-2">
+          <span className="text-primary">•</span>
+          <span>{inlineFmt(line.replace(/^\s*[-*]\s+/, ""))}</span>
+        </div>
+      );
+      continue;
+    }
+    if (/^\s*\d+\.\s+/.test(line)) {
+      out.push(
+        <div key={key} className="pl-1">
+          {inlineFmt(line)}
+        </div>
+      );
+      continue;
+    }
+    out.push(<p key={key}>{inlineFmt(line)}</p>);
+  }
+  return <div key={`b-${bi}`}>{out}</div>;
 }
 
 function inlineFmt(s: string) {
