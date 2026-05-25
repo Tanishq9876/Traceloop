@@ -642,6 +642,84 @@ function Workspace() {
               )}
             </div>
 
+            {answer && (
+              <div className="mt-4 rounded-xl border border-border/60 bg-background/30 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Follow-up questions
+                  </div>
+                  {followups.length > 0 && (
+                    <button
+                      onClick={() => setFollowups([])}
+                      className="text-[11px] text-muted-foreground hover:text-foreground"
+                    >
+                      Clear chat
+                    </button>
+                  )}
+                </div>
+
+                {followups.length > 0 && (
+                  <div
+                    ref={followupRef}
+                    className="mt-3 max-h-[420px] space-y-3 overflow-y-auto pr-1"
+                  >
+                    {followups.map((m, i) => (
+                      <div
+                        key={i}
+                        className={
+                          m.role === "user"
+                            ? "ml-auto max-w-[85%] rounded-2xl rounded-tr-sm border border-primary/30 bg-primary/10 px-3.5 py-2 text-sm text-foreground"
+                            : "mr-auto max-w-[92%] rounded-2xl rounded-tl-sm border border-border/60 bg-background/60 px-3.5 py-2.5 text-sm"
+                        }
+                      >
+                        {m.role === "user" ? (
+                          <div className="whitespace-pre-wrap">{m.content}</div>
+                        ) : m.content ? (
+                          <TutorOutput text={m.content} />
+                        ) : (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            Thinking…
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-3 flex gap-2">
+                  <Input
+                    value={followupDraft}
+                    onChange={(e) => setFollowupDraft(e.target.value)}
+                    placeholder="Ask a follow-up… (e.g. why is this O(n)? show a Java version)"
+                    disabled={followupStreaming}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        askFollowup();
+                      }
+                    }}
+                    className="border-border/60 bg-background/60"
+                  />
+                  {followupStreaming ? (
+                    <Button variant="outline" onClick={stopFollowup}>
+                      Stop
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={askFollowup}
+                      disabled={!followupDraft.trim()}
+                      className="gap-1.5"
+                    >
+                      <Send className="h-4 w-4" />
+                      Ask
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+
             {sessionId && showNotes && (
               <div className="mt-4 rounded-xl border border-border/60 bg-background/30 p-4">
                 <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
