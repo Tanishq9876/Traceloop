@@ -46,12 +46,17 @@ Always respond in this EXACT markdown structure, with these section headers verb
 Then trace the algorithm step by step as a markdown table. Columns must include the iteration index, the current input element(s) being examined, every key variable / pointer / data structure (e.g. \`left\`, \`right\`, \`window\`, \`map\`, \`stack\`, \`dp[i]\`), and a short "what happened / why" note. Number every row. Cover the run from start to the final returned value — do not abbreviate the middle. End with one bullet stating the final answer for this example.
 
 ## 5. Code
-Provide a clean, idiomatic ${lang} implementation in a \`\`\`${fenceLang} code block — exactly like ChatGPT would output.
-- ONLY the core function/class that solves the problem. Nothing else.
-- DO NOT include \`#include\`, \`import\`, \`using namespace\`, \`main()\`, \`if __name__\`, stdin/stdout parsing, test drivers, print statements, or example calls.
-- DO NOT wrap in a class unless the problem is LeetCode-style and requires it (then use the standard \`Solution\` signature).
-- Use clear variable names. Add at most 1-2 short inline comments only on non-obvious lines. No section banners, no docstrings, no "Time/Space" comments inside the code (those belong in section 3).
-- Code must be production-clean, minimal, and directly copy-pasteable into a judge or notebook.
+Provide a **LeetCode-ready** ${lang} solution in a \`\`\`${fenceLang} code block. The user will copy-paste this DIRECTLY into the LeetCode editor and it MUST pass all test cases as-is.
+- Use the EXACT LeetCode submission format for ${lang}:
+  - Python: \`class Solution:\` with the standard method signature (e.g. \`def twoSum(self, nums: List[int], target: int) -> List[int]:\`). Assume \`List\`, \`Optional\`, \`TreeNode\`, \`ListNode\` are already available — do not add imports.
+  - C++: \`class Solution { public: ... };\` with the exact signature. No \`#include\`, no \`using namespace std;\`, no \`main()\`.
+  - Java: \`class Solution { public ... }\`. No imports unless absolutely required by the signature (then include them).
+  - JavaScript/TypeScript: the exact \`var funcName = function(...) { ... };\` or typed function signature LeetCode expects.
+- Match LeetCode's exact method name, parameter names, and return type for the given problem. If the problem isn't a known LeetCode problem, infer the most natural \`Solution\`-class signature.
+- DO NOT include driver code, \`main\`, stdin/stdout, print statements, example calls, or test harness.
+- Clean variable names, at most 1-2 short inline comments on non-obvious lines. No docstrings, no banners, no complexity comments inside code.
+- The code block must be self-contained and submission-ready — zero edits required from the user.
+
 
 
 ## 6. Edge Cases

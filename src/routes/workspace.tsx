@@ -18,6 +18,8 @@ import {
   Code2,
   Maximize2,
   Minimize2,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
@@ -584,17 +586,44 @@ function TutorOutput({ text }: { text: string }) {
         if (block.startsWith("```")) {
           const m = block.match(/^```(\w+)?\n?([\s\S]*?)```$/);
           const code = m?.[2] ?? block.replace(/```/g, "");
-          return (
-            <pre
-              key={i}
-              className="overflow-x-auto rounded-lg border border-border/60 bg-background/80 p-4 font-mono text-xs text-foreground/90"
-            >
-              <code>{code}</code>
-            </pre>
-          );
+          const lang = m?.[1] ?? "";
+          return <CodeBlock key={i} code={code} lang={lang} />;
         }
         return renderProse(block, i);
       })}
+    </div>
+  );
+}
+
+function CodeBlock({ code, lang }: { code: string; lang: string }) {
+  const [copied, setCopied] = useState(false);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      toast.success("Code copied — paste into LeetCode");
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      toast.error("Couldn't copy");
+    }
+  };
+  return (
+    <div className="group relative overflow-hidden rounded-lg border border-border/60 bg-background/80">
+      <div className="flex items-center justify-between border-b border-border/40 bg-muted/30 px-3 py-1.5">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          {lang || "code"}
+        </span>
+        <button
+          onClick={onCopy}
+          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition hover:bg-accent hover:text-foreground"
+        >
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <pre className="overflow-x-auto p-4 font-mono text-xs text-foreground/90">
+        <code>{code}</code>
+      </pre>
     </div>
   );
 }
