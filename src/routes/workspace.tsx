@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/use-profile";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
@@ -71,6 +72,7 @@ function deriveTitle(problem: string): string {
 
 function Workspace() {
   const { user, loading } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const search = Route.useSearch();
   const [problem, setProblem] = useState("");
@@ -82,6 +84,9 @@ function Workspace() {
   const [noteDraft, setNoteDraft] = useState("");
   const [showNotes, setShowNotes] = useState(false);
   const [language, setLanguage] = useState<string>("python");
+  const [mode, setMode] = useState<string>("intermediate");
+  const [languageTouched, setLanguageTouched] = useState(false);
+  const [modeTouched, setModeTouched] = useState(false);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -100,6 +105,13 @@ function Workspace() {
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [user, loading, navigate]);
+
+  // Sync defaults from profile (unless user has manually overridden in this session)
+  useEffect(() => {
+    if (!profile) return;
+    if (!languageTouched && profile.preferred_language) setLanguage(profile.preferred_language);
+    if (!modeTouched && profile.preferred_mode) setMode(profile.preferred_mode);
+  }, [profile, languageTouched, modeTouched]);
 
   // Load existing session if ?id= provided
   useEffect(() => {
@@ -142,7 +154,7 @@ function Workspace() {
       const resp = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problem, language, imageDataUrl }),
+        body: JSON.stringify({ problem, language, mode, imageDataUrl }),
         signal: controller.signal,
       });
 
@@ -201,6 +213,8 @@ function Workspace() {
               problem,
               response: finalText,
               pattern,
+              mode,
+              language,
             },
           });
           if (session?.id) {
@@ -437,10 +451,23 @@ function Workspace() {
               </Button>
 
               <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
+                <select
+                  value={mode}
+                  onChange={(e) => { setMode(e.target.value); setModeTouched(true); }}
+                  disabled={streaming}
+                  className="rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  title="Explanation mode"
+                >
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="interview">Interview</option>
+                  <option value="fast">Fast revision</option>
+                  <option value="eli10">ELI10</option>
+                </select>
                 <Code2 className="h-3.5 w-3.5" />
                 <select
                   value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
+                  onChange={(e) => { setLanguage(e.target.value); setLanguageTouched(true); }}
                   disabled={streaming}
                   className="rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 >

@@ -18,7 +18,8 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { listSessions, getStats, listBookmarks, getProfile } from "@/lib/learning.functions";
+import { useProfile } from "@/hooks/use-profile";
+import { listSessions, getStats, listBookmarks } from "@/lib/learning.functions";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
@@ -34,6 +35,7 @@ type SessionRow = {
 
 function Dashboard() {
   const { user, loading } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [bookmarks, setBookmarks] = useState<SessionRow[]>([]);
@@ -42,12 +44,10 @@ function Dashboard() {
     patterns: [],
   });
   const [dataLoading, setDataLoading] = useState(true);
-  const [profileName, setProfileName] = useState<string | null>(null);
 
   const listSessionsFn = useServerFn(listSessions);
   const getStatsFn = useServerFn(getStats);
   const listBookmarksFn = useServerFn(listBookmarks);
-  const getProfileFn = useServerFn(getProfile);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -57,11 +57,10 @@ function Dashboard() {
     if (!user) return;
     (async () => {
       try {
-        const [{ sessions: s }, { patterns, totalSessions }, { bookmarks: bm }, { profile }] = await Promise.all([
+        const [{ sessions: s }, { patterns, totalSessions }, { bookmarks: bm }] = await Promise.all([
           listSessionsFn(),
           getStatsFn(),
           listBookmarksFn(),
-          getProfileFn(),
         ]);
         setSessions(s as SessionRow[]);
         setStats({ totalSessions, patterns });
@@ -70,12 +69,11 @@ function Dashboard() {
             .map((b) => b.tutor_sessions)
             .filter((x): x is SessionRow => !!x)
         );
-        if (profile?.display_name) setProfileName(profile.display_name);
       } finally {
         setDataLoading(false);
       }
     })();
-  }, [user, listSessionsFn, getStatsFn, listBookmarksFn, getProfileFn]);
+  }, [user, listSessionsFn, getStatsFn, listBookmarksFn]);
 
   if (loading || !user) {
     return (
@@ -86,7 +84,7 @@ function Dashboard() {
     );
   }
 
-  const displayName = profileName?.trim() || user.email?.split("@")[0] || "there";
+  const displayName = profile?.display_name?.trim() || user.email?.split("@")[0] || "there";
 
   return (
     <div className="relative min-h-screen">

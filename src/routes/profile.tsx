@@ -20,6 +20,7 @@ import {
   getStats,
 } from "@/lib/learning.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "@/hooks/use-profile";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
@@ -56,6 +57,7 @@ function ProfilePage() {
   const getProfileFn = useServerFn(getProfile);
   const updateProfileFn = useServerFn(updateProfile);
   const getStatsFn = useServerFn(getStats);
+  const { refresh: refreshProfile, setProfile: setSharedProfile } = useProfile();
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -77,13 +79,19 @@ function ProfilePage() {
   async function save() {
     setSaving(true);
     try {
-      await updateProfileFn({
-        data: {
-          display_name: displayName.trim() || undefined,
-          preferred_mode: mode as never,
-          preferred_language: language as never,
-        },
+      const next = {
+        display_name: displayName.trim() || undefined,
+        preferred_mode: mode,
+        preferred_language: language,
+      };
+      await updateProfileFn({ data: next as never });
+      // Update shared context instantly so dashboard/workspace reflect changes
+      setSharedProfile({
+        display_name: next.display_name ?? null,
+        preferred_mode: next.preferred_mode,
+        preferred_language: next.preferred_language,
       });
+      refreshProfile();
       toast.success("Profile updated");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Save failed");
