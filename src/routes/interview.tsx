@@ -127,7 +127,8 @@ function Interview() {
     setHintLevel(0);
     setHintText("");
     void send(
-      `Start a mock interview. Topic focus: ${t}. Please greet me briefly and present one problem appropriate for a 30-minute session.`
+      `Begin the mock interview. Topic focus: ${t}. Greet me briefly and present one well-scoped problem. Do not mention any time limit.`,
+      { hidden: true }
     );
   }
 
