@@ -429,6 +429,18 @@ function Interview() {
                     }
                   }}
                 />
+                {sttSupported && (
+                  <Button
+                    type="button"
+                    variant={listening ? "default" : "outline"}
+                    onClick={toggleListening}
+                    className="gap-2"
+                    title={listening ? "Stop dictation" : "Dictate with mic"}
+                  >
+                    {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    {listening ? "Stop" : "Mic"}
+                  </Button>
+                )}
                 <Button type="submit" disabled={streaming || !input.trim()} className="gap-2">
                   {streaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   Send
