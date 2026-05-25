@@ -128,6 +128,7 @@ function Workspace() {
           setSessionId(session.id);
           setProblem(session.problem);
           setAnswer(session.response ?? "");
+          setFollowups([]);
           const [{ bookmarked: b }, { notes: n }] = await Promise.all([
             isBookmarkedSrv({ data: { session_id: session.id } }),
             listNotesFn({ data: { session_id: session.id } }),
