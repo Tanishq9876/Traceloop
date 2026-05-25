@@ -297,7 +297,7 @@ function Workspace() {
       <div className="grid-bg pointer-events-none absolute inset-0 -z-10" aria-hidden />
       <Nav />
 
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <main className={`mx-auto px-4 py-8 ${expanded ? "max-w-[1600px]" : "max-w-7xl"}`}>
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Problem workspace</h1>
