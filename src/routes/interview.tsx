@@ -43,6 +43,89 @@ function Interview() {
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  // ===== Voice (browser-native, optional) =====
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const ttsSupported = typeof window !== "undefined" && "speechSynthesis" in window;
+  const sttSupported =
+    typeof window !== "undefined" &&
+    !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
+
+  function stripForSpeech(md: string) {
+    return md
+      .replace(/```[\s\S]*?```/g, " . code block omitted . ")
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/^#{1,6}\s+/gm, "")
+      .replace(/^\s*[-*]\s+/gm, "")
+      .replace(/\$([^$\n]+)\$/g, "$1")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function speak(text: string) {
+    if (!ttsSupported || !text) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(stripForSpeech(text));
+      u.rate = 1.02;
+      u.pitch = 1;
+      window.speechSynthesis.speak(u);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function stopSpeaking() {
+    if (ttsSupported) window.speechSynthesis.cancel();
+  }
+
+  function toggleListening() {
+    if (!sttSupported) {
+      toast.error("Voice input isn't supported in this browser");
+      return;
+    }
+    if (listening) {
+      recognitionRef.current?.stop?.();
+      return;
+    }
+    const Ctor =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const rec = new Ctor();
+    rec.lang = "en-US";
+    rec.interimResults = true;
+    rec.continuous = false;
+    let finalText = "";
+    rec.onresult = (e: any) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) finalText += r[0].transcript;
+        else interim += r[0].transcript;
+      }
+      setInput((prev) => {
+        // Replace transient interim with current snapshot
+        const base = prev.replace(/\s*\[\.\.\.\][^[]*$/, "");
+        return (base + " " + finalText + (interim ? ` [...]${interim}` : "")).trim();
+      });
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => {
+      setListening(false);
+      setInput((prev) => prev.replace(/\s*\[\.\.\.\][^[]*$/, "").trim());
+    };
+    recognitionRef.current = rec;
+    setListening(true);
+    try {
+      rec.start();
+    } catch {
+      setListening(false);
+    }
+  }
+
+  useEffect(() => () => stopSpeaking(), []);
+
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [user, loading, navigate]);
