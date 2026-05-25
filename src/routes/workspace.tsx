@@ -442,38 +442,54 @@ function Workspace() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.05 }}
-            className="glass flex min-h-[400px] flex-col rounded-2xl p-5"
+            className={`glass flex flex-col rounded-2xl p-5 ${expanded ? "min-h-[calc(100vh-9rem)]" : "min-h-[400px]"}`}
           >
             <div className="flex items-center justify-between">
               <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Structured explanation
               </label>
-              {sessionId && (
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowNotes((s) => !s)}
-                    className="gap-1.5 text-xs"
-                  >
-                    <StickyNote className="h-3.5 w-3.5" />
-                    Notes {notes.length > 0 && `(${notes.length})`}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onToggleBookmark}
-                    className="gap-1.5 text-xs"
-                  >
-                    {bookmarked ? (
-                      <BookmarkCheck className="h-3.5 w-3.5 text-primary" />
-                    ) : (
-                      <Bookmark className="h-3.5 w-3.5" />
-                    )}
-                    {bookmarked ? "Saved" : "Save"}
-                  </Button>
-                </div>
-              )}
+              <div className="flex gap-1">
+                {sessionId && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowNotes((s) => !s)}
+                      className="gap-1.5 text-xs"
+                    >
+                      <StickyNote className="h-3.5 w-3.5" />
+                      Notes {notes.length > 0 && `(${notes.length})`}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onToggleBookmark}
+                      className="gap-1.5 text-xs"
+                    >
+                      {bookmarked ? (
+                        <BookmarkCheck className="h-3.5 w-3.5 text-primary" />
+                      ) : (
+                        <Bookmark className="h-3.5 w-3.5" />
+                      )}
+                      {bookmarked ? "Saved" : "Save"}
+                    </Button>
+                  </>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setExpanded((e) => !e)}
+                  className="gap-1.5 text-xs"
+                  title={expanded ? "Exit full view" : "Full view"}
+                >
+                  {expanded ? (
+                    <Minimize2 className="h-3.5 w-3.5" />
+                  ) : (
+                    <Maximize2 className="h-3.5 w-3.5" />
+                  )}
+                  {expanded ? "Exit" : "Focus"}
+                </Button>
+              </div>
             </div>
             <div
               ref={outputRef}
