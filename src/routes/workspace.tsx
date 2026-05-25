@@ -586,14 +586,8 @@ function TutorOutput({ text }: { text: string }) {
         if (block.startsWith("```")) {
           const m = block.match(/^```(\w+)?\n?([\s\S]*?)```$/);
           const code = m?.[2] ?? block.replace(/```/g, "");
-          return (
-            <pre
-              key={i}
-              className="overflow-x-auto rounded-lg border border-border/60 bg-background/80 p-4 font-mono text-xs text-foreground/90"
-            >
-              <code>{code}</code>
-            </pre>
-          );
+          const lang = m?.[1] ?? "";
+          return <CodeBlock key={i} code={code} lang={lang} />;
         }
         return renderProse(block, i);
       })}
