@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Send, Loader2, Mic, Square, RotateCcw, Lightbulb } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { TutorOutput } from "@/components/TutorOutput";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -285,7 +286,13 @@ function Interview() {
                         : "mr-auto bg-background/60 text-foreground/90",
                     ].join(" ")}
                   >
-                    {m.content || (
+                    {m.content ? (
+                      m.role === "assistant" ? (
+                        <TutorOutput text={m.content} />
+                      ) : (
+                        <span className="whitespace-pre-wrap">{m.content}</span>
+                      )
+                    ) : (
                       <span className="inline-flex items-center gap-2 text-muted-foreground">
                         <Loader2 className="h-3 w-3 animate-spin" /> thinking…
                       </span>
