@@ -32,11 +32,11 @@ export const updateProfile = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { error } = await supabase
       .from("profiles")
-      .update(data)
-      .eq("user_id", userId);
+      .upsert({ user_id: userId, ...data }, { onConflict: "user_id" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
 
 // ---------- Sessions ----------
 

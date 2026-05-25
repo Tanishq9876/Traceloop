@@ -628,7 +628,7 @@ function CodeBlock({ code, lang }: { code: string; lang: string }) {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      toast.success("Code copied — paste into LeetCode");
+      toast.success("Code copied");
       setTimeout(() => setCopied(false), 1800);
     } catch {
       toast.error("Couldn't copy");
