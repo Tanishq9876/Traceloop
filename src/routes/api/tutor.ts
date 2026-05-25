@@ -1,6 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const SYSTEM_PROMPT = `You are Traceloop, an elite DSA tutor. The user gives you a programming problem.
+const LANG_NAMES: Record<string, string> = {
+  python: "Python",
+  javascript: "JavaScript",
+  typescript: "TypeScript",
+  java: "Java",
+  cpp: "C++",
+  go: "Go",
+};
+
+function systemPrompt(language: string) {
+  const lang = LANG_NAMES[language] ?? "Python";
+  const fenceLang =
+    language === "cpp" ? "cpp" : language === "typescript" ? "ts" : language;
+  return `You are Traceloop, an elite DSA tutor. The user gives you a programming problem (as text and/or an image of a problem statement). If an image is provided, first read the problem from it.
 
 Always respond in this EXACT markdown structure, with these section headers verbatim:
 
@@ -17,7 +30,7 @@ Explain the better idea (pattern name when relevant: two pointers, sliding windo
 Pick a small concrete example. Walk through the optimized algorithm step by step in a numbered list. Show the state of pointers / variables at each step.
 
 ## 5. Code
-Provide a clean, idiomatic Python implementation in a \`\`\`python code block. Use clear variable names, add 1-2 comments only at non-obvious lines.
+Provide a clean, idiomatic ${lang} implementation in a \`\`\`${fenceLang} code block. Use clear variable names, add 1-2 comments only at non-obvious lines.
 
 ## 6. Edge Cases
 Bullet list of 3-5 edge cases the solution handles or the user should verify.
@@ -26,16 +39,20 @@ Bullet list of 3-5 edge cases the solution handles or the user should verify.
 One line: "This is a classic **<pattern>** problem." Then 1 sentence on when to reach for this pattern in the future.
 
 Keep prose tight. Prioritize intuition over jargon. Never skip a section.`;
+}
 
 export const Route = createFileRoute("/api/tutor")({
   server: {
     handlers: {
       POST: async ({ request }) => {
         try {
-          const { problem, messages: history } = (await request.json()) as {
+          const body = (await request.json()) as {
             problem?: string;
+            language?: string;
+            imageDataUrl?: string;
             messages?: Array<{ role: "user" | "assistant"; content: string }>;
           };
+          const { problem, language = "python", imageDataUrl, messages: history } = body;
 
           const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
           if (!LOVABLE_API_KEY) {
@@ -45,10 +62,26 @@ export const Route = createFileRoute("/api/tutor")({
             );
           }
 
+          // Build user content: text + optional image (vision)
+          let userContent: unknown;
+          if (imageDataUrl) {
+            userContent = [
+              { type: "text", text: problem || "Read the problem from this image and solve it." },
+              { type: "image_url", image_url: { url: imageDataUrl } },
+            ];
+          } else {
+            userContent = problem ?? "";
+          }
+
           const messages =
             history && history.length
               ? history
-              : [{ role: "user" as const, content: problem ?? "" }];
+              : [{ role: "user" as const, content: userContent as never }];
+
+          // Use vision-capable model when image is supplied
+          const model = imageDataUrl
+            ? "google/gemini-2.5-flash"
+            : "google/gemini-3-flash-preview";
 
           const upstream = await fetch(
             "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -59,10 +92,10 @@ export const Route = createFileRoute("/api/tutor")({
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                model: "google/gemini-3-flash-preview",
+                model,
                 stream: true,
                 messages: [
-                  { role: "system", content: SYSTEM_PROMPT },
+                  { role: "system", content: systemPrompt(language) },
                   ...messages,
                 ],
               }),
