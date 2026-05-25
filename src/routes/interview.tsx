@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Loader2, Mic, Square, RotateCcw, Lightbulb, Timer } from "lucide-react";
+import { Send, Loader2, Mic, Square, RotateCcw, Lightbulb } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
