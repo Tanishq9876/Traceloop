@@ -1,7 +1,18 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Sparkles, Target, Bookmark, Upload, MessageSquare } from "lucide-react";
+import {
+  BookOpen,
+  Sparkles,
+  Target,
+  Bookmark,
+  Upload,
+  MessageSquare,
+  ArrowLeftRight,
+  Crosshair,
+  Layers,
+  Search as SearchIcon,
+} from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
@@ -11,15 +22,6 @@ export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
   head: () => ({ meta: [{ title: "Dashboard — Traceloop" }] }),
 });
-
-const cards = [
-  { icon: Upload, title: "Upload a problem", body: "Paste, drop a screenshot, or share a link.", cta: "Start a session" },
-  { icon: MessageSquare, title: "Recent sessions", body: "Pick up where you left off.", empty: "No sessions yet." },
-  { icon: Target, title: "Weak topics", body: "Topics to revisit based on your progress.", empty: "We'll surface these as you learn." },
-  { icon: Bookmark, title: "Bookmarks", body: "Saved problems and explanations.", empty: "Nothing bookmarked yet." },
-  { icon: Sparkles, title: "Recommended for you", body: "Personalized next problems.", empty: "Solve your first problem to unlock." },
-  { icon: BookOpen, title: "Concept library", body: "Curated patterns and visualizers.", cta: "Browse patterns" },
-];
 
 function Dashboard() {
   const { user, loading } = useAuth();
@@ -62,38 +64,88 @@ function Dashboard() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {cards.map((c, i) => (
-            <motion.div
-              key={c.title}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: i * 0.04 }}
-              className="glass group flex flex-col rounded-2xl p-6 transition-colors hover:bg-white/[0.04]"
+        {/* Primary CTAs */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Link
+            to="/workspace"
+            className="glass group flex flex-col rounded-2xl p-6 transition-colors hover:bg-white/[0.04]"
+          >
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+              <Upload className="h-5 w-5" />
+            </div>
+            <h3 className="mt-4 text-lg font-semibold">Open the workspace</h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Paste a problem. Get intuition, brute force, optimized solution, dry run, and code — streamed live.
+            </p>
+            <div className="mt-4 inline-flex items-center text-sm font-medium text-primary">
+              Start a session
+              <span className="ml-1 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
+          </Link>
+
+          <Link
+            to="/visualizers"
+            className="glass group flex flex-col rounded-2xl p-6 transition-colors hover:bg-white/[0.04]"
+          >
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <h3 className="mt-4 text-lg font-semibold">Algorithm visualizers</h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Step through Two Pointers, Sliding Window, Stack, and Binary Search frame by frame.
+            </p>
+            <div className="mt-4 inline-flex items-center text-sm font-medium text-primary">
+              Browse patterns
+              <span className="ml-1 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
+          </Link>
+        </div>
+
+        {/* Visualizer quick links */}
+        <h2 className="mt-12 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Jump into a pattern
+        </h2>
+        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+          {[
+            { slug: "two-pointers", title: "Two Pointers", icon: ArrowLeftRight },
+            { slug: "sliding-window", title: "Sliding Window", icon: Crosshair },
+            { slug: "stack", title: "Stack", icon: Layers },
+            { slug: "binary-search", title: "Binary Search", icon: SearchIcon },
+          ].map((v) => (
+            <Link
+              key={v.slug}
+              to="/visualizers/$slug"
+              params={{ slug: v.slug }}
+              className="glass flex items-center gap-3 rounded-xl p-4 text-sm transition-colors hover:bg-white/[0.04]"
             >
-              <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                <c.icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 text-base font-semibold">{c.title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{c.body}</p>
-
-              <div className="mt-5 flex-1 rounded-xl border border-dashed border-border/70 bg-background/40 p-4 text-center text-xs text-muted-foreground">
-                {c.empty ?? "Coming soon."}
-              </div>
-
-              {c.cta && (
-                <Button variant="outline" size="sm" className="mt-4 self-start" disabled>
-                  {c.cta}
-                </Button>
-              )}
-            </motion.div>
+              <v.icon className="h-4 w-4 text-primary" />
+              {v.title}
+            </Link>
           ))}
         </div>
 
-        <div className="glass mt-10 rounded-2xl p-6 text-sm text-muted-foreground">
-          <strong className="text-foreground">Coming next:</strong> upload + AI tutor workspace,
-          interactive visualizers (Two Pointers, Sliding Window, BFS/DFS, Binary Search), and
-          mock-interview mode.
+        {/* Coming soon shelves */}
+        <h2 className="mt-12 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Coming next
+        </h2>
+        <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {[
+            { icon: MessageSquare, title: "Session history", body: "Resume any past explanation." },
+            { icon: Target, title: "Weak topics", body: "We'll surface patterns to revisit." },
+            { icon: Bookmark, title: "Bookmarks", body: "Save problems and explanations." },
+            { icon: BookOpen, title: "Mock interview", body: "Timed sessions with AI feedback." },
+          ].map((c) => (
+            <div key={c.title} className="glass rounded-2xl p-5">
+              <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                <c.icon className="h-4 w-4" />
+              </div>
+              <h3 className="mt-3 text-sm font-semibold">{c.title}</h3>
+              <p className="mt-1 text-xs text-muted-foreground">{c.body}</p>
+              <Button variant="ghost" size="sm" className="mt-3 -ml-3 text-xs" disabled>
+                Coming soon
+              </Button>
+            </div>
+          ))}
         </div>
       </main>
 
