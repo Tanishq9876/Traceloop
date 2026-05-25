@@ -106,6 +106,13 @@ function Workspace() {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [user, loading, navigate]);
 
+  // Sync defaults from profile (unless user has manually overridden in this session)
+  useEffect(() => {
+    if (!profile) return;
+    if (!languageTouched && profile.preferred_language) setLanguage(profile.preferred_language);
+    if (!modeTouched && profile.preferred_mode) setMode(profile.preferred_mode);
+  }, [profile, languageTouched, modeTouched]);
+
   // Load existing session if ?id= provided
   useEffect(() => {
     if (!user || !search.id) return;
