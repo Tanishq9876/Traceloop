@@ -255,7 +255,91 @@ function Workspace() {
     setBookmarked(false);
     setNotes([]);
     setImageDataUrl(null);
+    setFollowups([]);
+    setFollowupDraft("");
     navigate({ to: "/workspace", search: {}, replace: true });
+  }
+
+  async function askFollowup() {
+    const q = followupDraft.trim();
+    if (!q || followupStreaming || !answer) return;
+    const newHistory: Array<{ role: "user" | "assistant"; content: string }> = [
+      { role: "user", content: problem || "(problem from image)" },
+      { role: "assistant", content: answer },
+      ...followups,
+      { role: "user", content: q },
+    ];
+    setFollowups((f) => [...f, { role: "user", content: q }, { role: "assistant", content: "" }]);
+    setFollowupDraft("");
+    setFollowupStreaming(true);
+    const controller = new AbortController();
+    followupAbortRef.current = controller;
+
+    try {
+      const resp = await fetch("/api/tutor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language, mode, followup: true, messages: newHistory }),
+        signal: controller.signal,
+      });
+      if (!resp.ok || !resp.body) {
+        const errBody = await resp.json().catch(() => ({}));
+        toast.error(errBody.error ?? "Follow-up failed");
+        setFollowups((f) => f.slice(0, -1));
+        setFollowupStreaming(false);
+        return;
+      }
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      let done = false;
+      while (!done) {
+        const { value, done: d } = await reader.read();
+        if (d) break;
+        buf += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buf.indexOf("\n")) !== -1) {
+          let line = buf.slice(0, idx);
+          buf = buf.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") { done = true; break; }
+          try {
+            const p = JSON.parse(json);
+            const delta = p.choices?.[0]?.delta?.content as string | undefined;
+            if (delta) {
+              setFollowups((f) => {
+                const copy = [...f];
+                const last = copy[copy.length - 1];
+                if (last && last.role === "assistant") {
+                  copy[copy.length - 1] = { ...last, content: last.content + delta };
+                }
+                return copy;
+              });
+              if (followupRef.current) {
+                followupRef.current.scrollTop = followupRef.current.scrollHeight;
+              }
+            }
+          } catch {
+            buf = line + "\n" + buf;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") {
+        toast.error("Follow-up stream failed");
+      }
+    } finally {
+      setFollowupStreaming(false);
+      followupAbortRef.current = null;
+    }
+  }
+
+  function stopFollowup() {
+    followupAbortRef.current?.abort();
+    setFollowupStreaming(false);
   }
 
   function onPickImage(file: File) {
