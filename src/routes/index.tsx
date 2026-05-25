@@ -163,69 +163,13 @@ function Landing() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section id="pricing" className="mx-auto max-w-6xl px-4 py-16">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-            Simple pricing
-          </h2>
-          <p className="mt-3 text-muted-foreground">
-            Start free. Upgrade when you're ready.
-          </p>
-        </div>
-
-        <div className="mx-auto grid max-w-3xl gap-4 md:grid-cols-2">
-          {[
-            {
-              name: "Free",
-              price: "$0",
-              tag: "For curious learners",
-              perks: ["AI tutor (limited)", "Basic visualizers", "Save 10 problems"],
-            },
-            {
-              name: "Pro",
-              price: "$12",
-              tag: "For interview prep",
-              perks: ["Unlimited AI tutor", "All visualizers", "Mock interviews", "Personalized memory"],
-              featured: true,
-            },
-          ].map((p) => (
-            <div
-              key={p.name}
-              className={[
-                "rounded-2xl border p-6",
-                p.featured
-                  ? "border-primary/40 bg-gradient-to-b from-primary/10 to-transparent"
-                  : "border-border bg-card/40",
-              ].join(" ")}
-            >
-              <div className="flex items-baseline justify-between">
-                <h3 className="text-lg font-semibold">{p.name}</h3>
-                <div>
-                  <span className="text-3xl font-semibold tracking-tight">{p.price}</span>
-                  <span className="text-sm text-muted-foreground">/mo</span>
-                </div>
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{p.tag}</p>
-              <ul className="mt-5 space-y-2 text-sm">
-                {p.perks.map((perk) => (
-                  <li key={perk} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-primary" /> {perk}
-                  </li>
-                ))}
-              </ul>
-              <Button asChild className="mt-6 w-full" variant={p.featured ? "default" : "outline"}>
-                <Link to="/auth">Get {p.name}</Link>
-              </Button>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* FAQ */}
       <section id="faq" className="mx-auto max-w-3xl px-4 py-16">
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">FAQ</h2>
+          <p className="mt-3 text-muted-foreground">
+            Everything you need to know about learning with Traceloop.
+          </p>
         </div>
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="1">
@@ -245,6 +189,42 @@ function Landing() {
             <AccordionTrigger>Does it work on mobile?</AccordionTrigger>
             <AccordionContent className="text-muted-foreground">
               Yes — visualizations, dry runs, and the tutor are all mobile-first.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="4">
+            <AccordionTrigger>Do I need prior DSA experience?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground">
+              Not at all. The tutor adapts from absolute beginner to interview-ready, starting
+              from first principles and scaling up as you grow.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="5">
+            <AccordionTrigger>How is this different from LeetCode or YouTube tutorials?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground">
+              LeetCode tests you; tutorials lecture at you. Traceloop *teaches* — interactive
+              visualizations, brute-force-to-optimal walkthroughs, and a tutor that answers
+              "why" as many times as you need.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="6">
+            <AccordionTrigger>Can I practice for technical interviews here?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground">
+              Yes. The Interview mode runs mock coding rounds with follow-up questions,
+              complexity discussions, and feedback — just like a real interviewer.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="7">
+            <AccordionTrigger>Does Traceloop track my progress?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground">
+              Yes — your history, solved problems, and learning patterns are saved so the tutor
+              can personalize future sessions and revisit weak spots.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="8">
+            <AccordionTrigger>Is my data private?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground">
+              Your sessions and progress are tied to your account and never shared. You control
+              your data and can delete it anytime from your profile.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
