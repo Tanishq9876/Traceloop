@@ -46,16 +46,6 @@ function Interview() {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [user, loading, navigate]);
 
-  useEffect(() => {
-    if (!running) return;
-    if (seconds >= duration) {
-      setRunning(false);
-      toast.info("Time's up — ask for feedback or wrap up.");
-      return;
-    }
-    const id = setTimeout(() => setSeconds((s) => s + 1), 1000);
-    return () => clearTimeout(id);
-  }, [running, seconds, duration]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
