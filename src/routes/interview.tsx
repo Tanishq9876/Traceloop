@@ -275,7 +275,7 @@ function Interview() {
                 ref={scrollRef}
                 className="flex-1 space-y-4 overflow-y-auto rounded-xl border border-border/60 bg-background/40 p-5"
               >
-                {messages.map((m, i) => (
+                {messages.filter((m) => !m.hidden).map((m, i) => (
                   <div
                     key={i}
                     className={[
