@@ -13,6 +13,9 @@ import {
   StickyNote,
   Trash2,
   History,
+  ImagePlus,
+  X,
+  Code2,
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { Button } from "@/components/ui/button";
@@ -74,8 +77,11 @@ function Workspace() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [noteDraft, setNoteDraft] = useState("");
   const [showNotes, setShowNotes] = useState(false);
+  const [language, setLanguage] = useState<string>("python");
+  const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const outputRef = useRef<HTMLDivElement | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   const createSessionFn = useServerFn(createSession);
   const updateSessionFn = useServerFn(updateSession);
@@ -120,7 +126,7 @@ function Workspace() {
   }, [answer]);
 
   async function run() {
-    if (!problem.trim() || streaming) return;
+    if ((!problem.trim() && !imageDataUrl) || streaming) return;
     setAnswer("");
     setStreaming(true);
     const controller = new AbortController();
@@ -131,7 +137,7 @@ function Workspace() {
       const resp = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problem }),
+        body: JSON.stringify({ problem, language, imageDataUrl }),
         signal: controller.signal,
       });
 
