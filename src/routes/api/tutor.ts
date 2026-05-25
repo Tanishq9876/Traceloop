@@ -27,7 +27,9 @@ Describe the naive approach. State its time and space complexity in bold like **
 Explain the better idea (pattern name when relevant: two pointers, sliding window, hash map, binary search, BFS/DFS, DP, etc.). State **time and space**. Explain WHY the optimization works — the invariant or insight.
 
 ## 4. Dry Run
-Pick a small concrete example. Walk through the optimized algorithm step by step in a numbered list. Show the state of pointers / variables at each step.
+Pick ONE carefully crafted example input that exercises EVERY important concept and branch of the optimized algorithm (e.g. duplicates, the window shrinking, a pointer crossover, the hash-map hit, an empty/boundary moment — whichever apply to this problem). Briefly say WHY this example is a good stress-test (1 line).
+
+Then trace the algorithm step by step as a markdown table. Columns must include the iteration index, the current input element(s) being examined, every key variable / pointer / data structure (e.g. \`left\`, \`right\`, \`window\`, \`map\`, \`stack\`, \`dp[i]\`), and a short "what happened / why" note. Number every row. Cover the run from start to the final returned value — do not abbreviate the middle. End with one line stating the final answer for this example.
 
 ## 5. Code
 Provide a clean, idiomatic ${lang} implementation in a \`\`\`${fenceLang} code block. Use clear variable names, add 1-2 comments only at non-obvious lines.
