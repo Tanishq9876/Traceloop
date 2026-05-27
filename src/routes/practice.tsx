@@ -493,14 +493,27 @@ function PracticePage() {
 
 function PlatformDot({ platform }: { platform: Platform }) {
   const meta = PLATFORM_META[platform];
+  const [errored, setErrored] = useState(false);
   return (
     <span
       className={cn(
-        "inline-flex h-5 w-5 items-center justify-center rounded-md bg-gradient-to-br text-[9px] font-bold text-white shadow-sm",
-        meta.color,
+        "inline-flex h-5 w-5 items-center justify-center overflow-hidden rounded-md bg-white text-[9px] font-bold text-slate-900 shadow-sm ring-1 ring-border/40",
+        errored && "bg-gradient-to-br text-white ring-0",
+        errored && meta.color,
       )}
+      aria-label={platform}
     >
-      {meta.initials}
+      {errored ? (
+        meta.initials
+      ) : (
+        <img
+          src={meta.logo}
+          alt={`${platform} logo`}
+          loading="lazy"
+          onError={() => setErrored(true)}
+          className="h-4 w-4 object-contain"
+        />
+      )}
     </span>
   );
 }
