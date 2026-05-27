@@ -160,9 +160,32 @@ export const QUESTIONS: Question[] = [
   mk("so4", "Merge Sort", "GeeksforGeeks", "Medium", "https://www.geeksforgeeks.org/merge-sort/", "Sorting", ["Divide & Conquer"], 78, 26),
 ];
 
-export const PLATFORM_META: Record<Platform, { color: string; initials: string; url: string }> = {
-  LeetCode: { color: "from-amber-500 to-orange-600", initials: "LC", url: "https://leetcode.com" },
-  GeeksforGeeks: { color: "from-emerald-500 to-green-700", initials: "GFG", url: "https://geeksforgeeks.org" },
-  Codeforces: { color: "from-sky-500 to-blue-700", initials: "CF", url: "https://codeforces.com" },
-  CodeChef: { color: "from-amber-700 to-stone-800", initials: "CC", url: "https://codechef.com" },
+export const PLATFORM_META: Record<
+  Platform,
+  { color: string; initials: string; url: string; logo: string }
+> = {
+  LeetCode: {
+    color: "from-amber-500 to-orange-600",
+    initials: "LC",
+    url: "https://leetcode.com",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_logo_black.png",
+  },
+  GeeksforGeeks: {
+    color: "from-emerald-500 to-green-700",
+    initials: "GFG",
+    url: "https://geeksforgeeks.org",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/4/43/GeeksforGeeks.svg",
+  },
+  Codeforces: {
+    color: "from-sky-500 to-blue-700",
+    initials: "CF",
+    url: "https://codeforces.com",
+    logo: "https://codeforces.org/s/0/favicon-96x96.png",
+  },
+  CodeChef: {
+    color: "from-amber-700 to-stone-800",
+    initials: "CC",
+    url: "https://codechef.com",
+    logo: "https://cdn.codechef.com/images/cc-logo.png",
+  },
 };
