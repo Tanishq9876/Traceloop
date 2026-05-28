@@ -401,7 +401,7 @@ function PracticePage() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as Sort)}
-                className="bg-transparent text-xs outline-none"
+                className="bg-transparent text-xs text-foreground outline-none [&>option]:bg-background [&>option]:text-foreground"
               >
                 <option value="popular">Most popular</option>
                 <option value="difficulty">Difficulty</option>
