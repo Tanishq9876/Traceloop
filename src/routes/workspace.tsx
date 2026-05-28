@@ -428,7 +428,7 @@ function Workspace() {
           </div>
         </div>
 
-        <div className={`grid grid-cols-1 gap-6 ${expanded ? "" : "lg:grid-cols-2"}`}>
+        <div className="grid grid-cols-1 gap-6">
           {/* Input */}
           <motion.section
             initial={{ opacity: 0, y: 6 }}
