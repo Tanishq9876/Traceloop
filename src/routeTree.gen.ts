@@ -22,6 +22,7 @@ import { Route as VisualizersSlugRouteImport } from './routes/visualizers.$slug'
 import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 import { Route as ApiInterviewRouteImport } from './routes/api/interview'
 import { Route as ApiHintRouteImport } from './routes/api/hint'
+import { Route as ApiDryrunRouteImport } from './routes/api/dryrun'
 
 const WorkspaceRoute = WorkspaceRouteImport.update({
   id: '/workspace',
@@ -88,6 +89,11 @@ const ApiHintRoute = ApiHintRouteImport.update({
   path: '/api/hint',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDryrunRoute = ApiDryrunRouteImport.update({
+  id: '/api/dryrun',
+  path: '/api/dryrun',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/dryrun': typeof ApiDryrunRoute
   '/api/hint': typeof ApiHintRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/dryrun': typeof ApiDryrunRoute
   '/api/hint': typeof ApiHintRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/visualizers': typeof VisualizersRouteWithChildren
   '/workspace': typeof WorkspaceRoute
+  '/api/dryrun': typeof ApiDryrunRoute
   '/api/hint': typeof ApiHintRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/tutor': typeof ApiTutorRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/dryrun'
     | '/api/hint'
     | '/api/interview'
     | '/api/tutor'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/dryrun'
     | '/api/hint'
     | '/api/interview'
     | '/api/tutor'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/visualizers'
     | '/workspace'
+    | '/api/dryrun'
     | '/api/hint'
     | '/api/interview'
     | '/api/tutor'
@@ -193,6 +205,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   VisualizersRoute: typeof VisualizersRouteWithChildren
   WorkspaceRoute: typeof WorkspaceRoute
+  ApiDryrunRoute: typeof ApiDryrunRoute
   ApiHintRoute: typeof ApiHintRoute
   ApiInterviewRoute: typeof ApiInterviewRoute
   ApiTutorRoute: typeof ApiTutorRoute
@@ -291,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHintRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/dryrun': {
+      id: '/api/dryrun'
+      path: '/api/dryrun'
+      fullPath: '/api/dryrun'
+      preLoaderRoute: typeof ApiDryrunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -316,6 +336,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   VisualizersRoute: VisualizersRouteWithChildren,
   WorkspaceRoute: WorkspaceRoute,
+  ApiDryrunRoute: ApiDryrunRoute,
   ApiHintRoute: ApiHintRoute,
   ApiInterviewRoute: ApiInterviewRoute,
   ApiTutorRoute: ApiTutorRoute,
@@ -323,3 +344,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
