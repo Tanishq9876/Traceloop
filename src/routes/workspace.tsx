@@ -23,7 +23,6 @@ import {
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { TutorOutput } from "@/components/TutorOutput";
-import { DryRunVisualizer } from "@/components/DryRunVisualizer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -643,10 +642,6 @@ function Workspace() {
                 </div>
               )}
             </div>
-
-            {answer && !streaming && (
-              <DryRunVisualizer answer={answer} problem={problem} language={language} />
-            )}
 
             {answer && (
               <div className="mt-4 rounded-xl border border-border/60 bg-background/30 p-4">
