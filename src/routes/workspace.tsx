@@ -644,6 +644,10 @@ function Workspace() {
               )}
             </div>
 
+            {answer && !streaming && (
+              <DryRunVisualizer answer={answer} problem={problem} language={language} />
+            )}
+
             {answer && (
               <div className="mt-4 rounded-xl border border-border/60 bg-background/30 p-4">
                 <div className="flex items-center justify-between">
