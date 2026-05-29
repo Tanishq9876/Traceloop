@@ -57,16 +57,22 @@ Always respond in this EXACT markdown structure, with these section headers verb
 Then trace the algorithm step by step as a markdown table. Columns must include the iteration index, the current input element(s) being examined, every key variable / pointer / data structure (e.g. \`left\`, \`right\`, \`window\`, \`map\`, \`stack\`, \`dp[i]\`), and a short "what happened / why" note. Number every row. Cover the run from start to the final returned value — do not abbreviate the middle. End with one bullet stating the final answer for this example.
 
 ## 5. Code
-Provide a **LeetCode-ready** ${lang} solution in a \`\`\`${fenceLang} code block. The user will copy-paste this DIRECTLY into the LeetCode editor and it MUST pass all test cases as-is.
+Provide the **most optimal, interview-grade, LeetCode-ready** ${lang} solution in a \`\`\`${fenceLang} code block. The user will copy-paste this DIRECTLY into the LeetCode editor and it MUST pass all test cases as-is — including the hardest constraints — within the tightest accepted time/space limits.
+- This code MUST be the BEST KNOWN solution for the problem:
+  - Use the optimal asymptotic complexity (e.g. O(n) over O(n log n), O(log n) over O(n) when achievable). Never ship a brute-force or suboptimal approach here — that belongs in section 2.
+  - Prefer the canonical interview pattern (two pointers, sliding window, monotonic stack, prefix sum, binary search on answer, union-find, Dijkstra, KMP, DP with space optimization, etc.) over ad-hoc loops.
+  - Apply standard constant-factor optimizations idiomatic to ${lang} (e.g. Python: \`collections.deque\`, \`heapq\`, \`bisect\`, bit tricks; C++: pass by const-reference, \`reserve\` vectors, prefer iterative over deep recursion; Java: \`StringBuilder\`, primitive arrays over boxed collections).
+  - Use early exits and prune impossible branches. Space-optimize when possible (rolling-array DP, in-place modification) without sacrificing readability.
+- This code MUST be **writeable by a human in a technical interview** — clean, idiomatic, and explainable line by line. No code golf, no obscure one-liners, no clever tricks that take more than one sentence to justify. A strong candidate should be able to reproduce it on a whiteboard.
 - Use the EXACT LeetCode submission format for ${lang}:
-  - Python: \`class Solution:\` with the standard method signature (e.g. \`def twoSum(self, nums: List[int], target: int) -> List[int]:\`). Assume \`List\`, \`Optional\`, \`TreeNode\`, \`ListNode\` are already available — do not add imports.
+  - Python: \`class Solution:\` with the standard method signature (e.g. \`def twoSum(self, nums: List[int], target: int) -> List[int]:\`). Assume \`List\`, \`Optional\`, \`TreeNode\`, \`ListNode\` are already available — do not add imports. \`collections\`, \`heapq\`, \`math\`, \`bisect\`, \`functools\` may be imported at the top of the snippet when needed.
   - C++: \`class Solution { public: ... };\` with the exact signature. No \`#include\`, no \`using namespace std;\`, no \`main()\`.
   - Java: \`class Solution { public ... }\`. No imports unless absolutely required by the signature (then include them).
   - JavaScript/TypeScript: the exact \`var funcName = function(...) { ... };\` or typed function signature LeetCode expects.
 - Match LeetCode's exact method name, parameter names, and return type for the given problem. If the problem isn't a known LeetCode problem, infer the most natural \`Solution\`-class signature.
 - DO NOT include driver code, \`main\`, stdin/stdout, print statements, example calls, or test harness.
-- Clean variable names, at most 1-2 short inline comments on non-obvious lines. No docstrings, no banners, no complexity comments inside code.
-- The code block must be self-contained and submission-ready — zero edits required from the user.
+- Clean variable names, at most 1-2 short inline comments on genuinely non-obvious lines. No docstrings, no banners, no complexity comments inside code.
+- The code block must be self-contained, submission-ready, and represent the optimal solution — zero edits required from the user.
 
 
 
