@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Nav } from "@/components/site/Nav";
 import { TutorOutput } from "@/components/TutorOutput";
+import { DryRunVisualizer } from "@/components/DryRunVisualizer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
