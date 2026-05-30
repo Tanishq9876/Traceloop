@@ -45,10 +45,38 @@ export const Route = createFileRoute("/practice")({
   }),
 });
 
-type Sort = "popular" | "difficulty" | "recent" | "platform";
+type Sort = "popular" | "difficulty" | "recent" | "platform" | "striver" | "babbar";
 
 const DIFFICULTIES: Difficulty[] = ["Easy", "Medium", "Hard"];
 const DIFF_RANK: Record<Difficulty, number> = { Easy: 0, Medium: 1, Hard: 2 };
+
+// Striver's A2Z sheet order = the natural insertion order of QUESTIONS.
+const STRIVER_ORDER: Record<string, number> = Object.fromEntries(
+  QUESTIONS.map((q, i) => [q.id, i]),
+);
+
+// Love Babbar 450 sheet topic sequence. Questions are ordered by this topic
+// rank first, then by their position within the source sheet (Striver order)
+// to keep a stable, sheet-like progression inside each topic.
+const BABBAR_TOPIC_RANK: Record<string, number> = {
+  "Arrays": 1,
+  "Strings": 2,
+  "Sliding Window & Two Pointers": 3,
+  "Binary Search": 4,
+  "Sorting": 5,
+  "Linked List": 6,
+  "Binary Trees": 7,
+  "Binary Search Trees": 8,
+  "Greedy Algorithms": 9,
+  "Recursion": 10,
+  "Stack and Queues": 11,
+  "Heaps": 12,
+  "Graphs": 13,
+  "Tries": 14,
+  "Dynamic Programming": 15,
+  "Bit Manipulation": 16,
+  "Basics": 17,
+};
 
 const LS_SAVED = "tl_practice_saved";
 const LS_SOLVED = "tl_practice_solved";
