@@ -455,8 +455,13 @@ function PracticePage() {
         {/* Results */}
         <section className="mt-6">
           <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
+            <span className="inline-flex items-center gap-2">
               {loading ? "Loading…" : `${filtered.length} question${filtered.length === 1 ? "" : "s"}`}
+              {(sort === "striver" || sort === "babbar") && !loading && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
+                  Following {sort === "striver" ? "Striver's A-Z Sheet" : "Love Babbar Sheet"}
+                </span>
+              )}
             </span>
             {saved.size > 0 && (
               <span className="inline-flex items-center gap-1">
