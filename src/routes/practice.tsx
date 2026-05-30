@@ -180,9 +180,18 @@ function PracticePage() {
           return +new Date(b.addedAt) - +new Date(a.addedAt);
         case "platform":
           return a.platform.localeCompare(b.platform);
+        case "striver":
+          return (STRIVER_ORDER[a.id] ?? 1e9) - (STRIVER_ORDER[b.id] ?? 1e9);
+        case "babbar": {
+          const ra = BABBAR_TOPIC_RANK[a.topic] ?? 99;
+          const rb = BABBAR_TOPIC_RANK[b.topic] ?? 99;
+          if (ra !== rb) return ra - rb;
+          return (STRIVER_ORDER[a.id] ?? 1e9) - (STRIVER_ORDER[b.id] ?? 1e9);
+        }
+        default:
+          return 0;
       }
     });
-    return res;
   }, [debounced, activePlatforms, activeDifficulties, sort]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
