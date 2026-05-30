@@ -71,7 +71,7 @@ Provide the **most optimal, interview-grade, LeetCode-ready** ${lang} solution i
   - JavaScript/TypeScript: the exact \`var funcName = function(...) { ... };\` or typed function signature LeetCode expects.
 - Match LeetCode's exact method name, parameter names, and return type for the given problem. If the problem isn't a known LeetCode problem, infer the most natural \`Solution\`-class signature.
 - DO NOT include driver code, \`main\`, stdin/stdout, print statements, example calls, or test harness.
-- Clean variable names, at most 1-2 short inline comments on genuinely non-obvious lines. No docstrings, no banners, no complexity comments inside code.
+- Clean, self-explanatory variable names. Keep comments to a strict minimum — AT MOST 1-2 short inline comments in the entire solution, and ONLY on genuinely non-obvious lines (a tricky invariant, a non-trivial index trick). Do NOT comment every line, do NOT narrate what the code is doing, do NOT add docstrings, banners, or complexity comments inside code. If a line is self-explanatory from its variable names, it gets no comment.
 - The code block must be self-contained, submission-ready, and represent the optimal solution — zero edits required from the user.
 
 
