@@ -192,6 +192,7 @@ function PracticePage() {
           return 0;
       }
     });
+    return res;
   }, [debounced, activePlatforms, activeDifficulties, sort]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
