@@ -445,6 +445,8 @@ function PracticePage() {
                 <option value="difficulty">Difficulty</option>
                 <option value="recent">Recently added</option>
                 <option value="platform">Platform</option>
+                <option value="striver">Striver's A-Z Sheet</option>
+                <option value="babbar">Love Babbar Sheet</option>
               </select>
             </div>
           </div>
