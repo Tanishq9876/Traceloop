@@ -352,11 +352,11 @@ function PracticePage() {
         {/* Topic chips */}
         <div className="mt-4 flex flex-wrap gap-2">
           {TOPICS.slice(0, 12).map((t) => {
-            const active = debounced.toLowerCase() === t.toLowerCase();
+            const active = queryTokens.includes(t.toLowerCase());
             return (
               <button
                 key={t}
-                onClick={() => commitSearch(active ? "" : t)}
+                onClick={() => toggleTopic(t)}
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs transition",
                   active
