@@ -126,20 +126,33 @@ function PracticePage() {
     setPage(1);
   }, [debounced, activePlatforms, activeDifficulties, sort]);
 
+  const parseTokens = (s: string) =>
+    s
+      .split(",")
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean);
+
+  const queryTokens = useMemo(() => parseTokens(debounced), [debounced]);
+
   const suggestions = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    // Suggest based on the last (in-progress) token after the last comma
+    const lastSeg = query.split(",").pop() ?? "";
+    const q = lastSeg.trim().toLowerCase();
     if (!q) return [];
-    return TOPICS.filter((t) => t.toLowerCase().includes(q)).slice(0, 6);
+    const already = new Set(parseTokens(query));
+    return TOPICS.filter(
+      (t) => t.toLowerCase().includes(q) && !already.has(t.toLowerCase()),
+    ).slice(0, 6);
   }, [query]);
 
   const filtered = useMemo(() => {
-    const q = debounced.trim().toLowerCase();
     const res = QUESTIONS.filter((it) => {
       if (!activePlatforms.has(it.platform)) return false;
       if (!activeDifficulties.has(it.difficulty)) return false;
-      if (!q) return true;
+      if (queryTokens.length === 0) return true;
       const hay = [it.title, it.topic, ...it.tags].join(" ").toLowerCase();
-      return hay.includes(q);
+      // OR match across topics so users can practice multiple at once
+      return queryTokens.some((tok) => hay.includes(tok));
     });
 
     res.sort((a, b) => {
@@ -184,8 +197,11 @@ function PracticePage() {
     setQuery(t);
     setShowSuggest(false);
     if (!t) return;
+    const tokens = parseTokens(t);
     setRecent((prev) => {
-      const next = [t, ...prev.filter((x) => x.toLowerCase() !== t.toLowerCase())].slice(0, 6);
+      const lowerPrev = prev.map((x) => x.toLowerCase());
+      const additions = tokens.filter((tok) => !lowerPrev.includes(tok));
+      const next = [...additions, ...prev].slice(0, 6);
       try {
         localStorage.setItem(LS_RECENT, JSON.stringify(next));
       } catch {
@@ -193,6 +209,30 @@ function PracticePage() {
       }
       return next;
     });
+  };
+
+  // Append a topic suggestion to the query, replacing the in-progress segment
+  const appendSuggestion = (topic: string) => {
+    const segments = query.split(",");
+    segments[segments.length - 1] = ` ${topic}`;
+    const next = segments.join(",").replace(/^\s+/, "") + ", ";
+    setQuery(next);
+    setShowSuggest(true);
+  };
+
+  // Toggle a topic in/out of the comma-separated query (used by topic chips)
+  const toggleTopic = (topic: string) => {
+    const lower = topic.toLowerCase();
+    const tokens = parseTokens(query);
+    const exists = tokens.includes(lower);
+    const next = exists
+      ? tokens.filter((t) => t !== lower)
+      : [...tokens, lower];
+    // Preserve original casing for known topics
+    const display = next.map(
+      (t) => TOPICS.find((x) => x.toLowerCase() === t) ?? t,
+    );
+    setQuery(display.join(", "));
   };
 
   const clearRecent = () => {
@@ -236,7 +276,7 @@ function PracticePage() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") commitSearch(query);
               }}
-              placeholder="Search a topic — e.g. Binary Search, Graphs, DP…"
+              placeholder="Search topics — separate with commas, e.g. Binary Search, Graphs, DP"
               className="border-0 bg-transparent p-0 text-base shadow-none focus-visible:ring-0"
             />
             {query && (
@@ -275,7 +315,7 @@ function PracticePage() {
                   <button
                     key={s}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => commitSearch(s)}
+                    onClick={() => appendSuggestion(s)}
                     className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/[0.04]"
                   >
                     <Search className="h-3.5 w-3.5 text-muted-foreground" />
@@ -312,11 +352,11 @@ function PracticePage() {
         {/* Topic chips */}
         <div className="mt-4 flex flex-wrap gap-2">
           {TOPICS.slice(0, 12).map((t) => {
-            const active = debounced.toLowerCase() === t.toLowerCase();
+            const active = queryTokens.includes(t.toLowerCase());
             return (
               <button
                 key={t}
-                onClick={() => commitSearch(active ? "" : t)}
+                onClick={() => toggleTopic(t)}
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs transition",
                   active
