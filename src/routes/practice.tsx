@@ -276,7 +276,7 @@ function PracticePage() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") commitSearch(query);
               }}
-              placeholder="Search a topic — e.g. Binary Search, Graphs, DP…"
+              placeholder="Search topics — separate with commas, e.g. Binary Search, Graphs, DP"
               className="border-0 bg-transparent p-0 text-base shadow-none focus-visible:ring-0"
             />
             {query && (
