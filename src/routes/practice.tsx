@@ -126,20 +126,33 @@ function PracticePage() {
     setPage(1);
   }, [debounced, activePlatforms, activeDifficulties, sort]);
 
+  const parseTokens = (s: string) =>
+    s
+      .split(",")
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean);
+
+  const queryTokens = useMemo(() => parseTokens(debounced), [debounced]);
+
   const suggestions = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    // Suggest based on the last (in-progress) token after the last comma
+    const lastSeg = query.split(",").pop() ?? "";
+    const q = lastSeg.trim().toLowerCase();
     if (!q) return [];
-    return TOPICS.filter((t) => t.toLowerCase().includes(q)).slice(0, 6);
+    const already = new Set(parseTokens(query));
+    return TOPICS.filter(
+      (t) => t.toLowerCase().includes(q) && !already.has(t.toLowerCase()),
+    ).slice(0, 6);
   }, [query]);
 
   const filtered = useMemo(() => {
-    const q = debounced.trim().toLowerCase();
     const res = QUESTIONS.filter((it) => {
       if (!activePlatforms.has(it.platform)) return false;
       if (!activeDifficulties.has(it.difficulty)) return false;
-      if (!q) return true;
+      if (queryTokens.length === 0) return true;
       const hay = [it.title, it.topic, ...it.tags].join(" ").toLowerCase();
-      return hay.includes(q);
+      // OR match across topics so users can practice multiple at once
+      return queryTokens.some((tok) => hay.includes(tok));
     });
 
     res.sort((a, b) => {
