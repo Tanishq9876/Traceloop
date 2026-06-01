@@ -315,7 +315,7 @@ function PracticePage() {
                   <button
                     key={s}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => commitSearch(s)}
+                    onClick={() => appendSuggestion(s)}
                     className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/[0.04]"
                   >
                     <Search className="h-3.5 w-3.5 text-muted-foreground" />
