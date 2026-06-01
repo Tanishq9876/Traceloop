@@ -45,38 +45,10 @@ export const Route = createFileRoute("/practice")({
   }),
 });
 
-type Sort = "popular" | "difficulty" | "recent" | "platform" | "striver" | "babbar";
+type Sort = "popular" | "difficulty" | "recent" | "platform";
 
 const DIFFICULTIES: Difficulty[] = ["Easy", "Medium", "Hard"];
 const DIFF_RANK: Record<Difficulty, number> = { Easy: 0, Medium: 1, Hard: 2 };
-
-// Striver's A2Z sheet order = the natural insertion order of QUESTIONS.
-const STRIVER_ORDER: Record<string, number> = Object.fromEntries(
-  QUESTIONS.map((q, i) => [q.id, i]),
-);
-
-// Love Babbar 450 sheet topic sequence. Questions are ordered by this topic
-// rank first, then by their position within the source sheet (Striver order)
-// to keep a stable, sheet-like progression inside each topic.
-const BABBAR_TOPIC_RANK: Record<string, number> = {
-  "Arrays": 1,
-  "Strings": 2,
-  "Sliding Window & Two Pointers": 3,
-  "Binary Search": 4,
-  "Sorting": 5,
-  "Linked List": 6,
-  "Binary Trees": 7,
-  "Binary Search Trees": 8,
-  "Greedy Algorithms": 9,
-  "Recursion": 10,
-  "Stack and Queues": 11,
-  "Heaps": 12,
-  "Graphs": 13,
-  "Tries": 14,
-  "Dynamic Programming": 15,
-  "Bit Manipulation": 16,
-  "Basics": 17,
-};
 
 const LS_SAVED = "tl_practice_saved";
 const LS_SOLVED = "tl_practice_solved";
@@ -180,14 +152,6 @@ function PracticePage() {
           return +new Date(b.addedAt) - +new Date(a.addedAt);
         case "platform":
           return a.platform.localeCompare(b.platform);
-        case "striver":
-          return (STRIVER_ORDER[a.id] ?? 1e9) - (STRIVER_ORDER[b.id] ?? 1e9);
-        case "babbar": {
-          const ra = BABBAR_TOPIC_RANK[a.topic] ?? 99;
-          const rb = BABBAR_TOPIC_RANK[b.topic] ?? 99;
-          if (ra !== rb) return ra - rb;
-          return (STRIVER_ORDER[a.id] ?? 1e9) - (STRIVER_ORDER[b.id] ?? 1e9);
-        }
         default:
           return 0;
       }
@@ -403,12 +367,6 @@ function PracticePage() {
               >
                 All
               </button>
-              <button
-                onClick={() => setActivePlatforms(new Set())}
-                className="rounded-md px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground"
-              >
-                None
-              </button>
             </div>
           </div>
 
@@ -445,8 +403,6 @@ function PracticePage() {
                 <option value="difficulty">Difficulty</option>
                 <option value="recent">Recently added</option>
                 <option value="platform">Platform</option>
-                <option value="striver">Striver's A-Z Sheet</option>
-                <option value="babbar">Love Babbar Sheet</option>
               </select>
             </div>
           </div>
@@ -457,11 +413,6 @@ function PracticePage() {
           <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-2">
               {loading ? "Loading…" : `${filtered.length} question${filtered.length === 1 ? "" : "s"}`}
-              {(sort === "striver" || sort === "babbar") && !loading && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
-                  Following {sort === "striver" ? "Striver's A-Z Sheet" : "Love Babbar Sheet"}
-                </span>
-              )}
             </span>
             {saved.size > 0 && (
               <span className="inline-flex items-center gap-1">
