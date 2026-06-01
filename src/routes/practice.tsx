@@ -197,8 +197,11 @@ function PracticePage() {
     setQuery(t);
     setShowSuggest(false);
     if (!t) return;
+    const tokens = parseTokens(t);
     setRecent((prev) => {
-      const next = [t, ...prev.filter((x) => x.toLowerCase() !== t.toLowerCase())].slice(0, 6);
+      const lowerPrev = prev.map((x) => x.toLowerCase());
+      const additions = tokens.filter((tok) => !lowerPrev.includes(tok));
+      const next = [...additions, ...prev].slice(0, 6);
       try {
         localStorage.setItem(LS_RECENT, JSON.stringify(next));
       } catch {
@@ -206,6 +209,30 @@ function PracticePage() {
       }
       return next;
     });
+  };
+
+  // Append a topic suggestion to the query, replacing the in-progress segment
+  const appendSuggestion = (topic: string) => {
+    const segments = query.split(",");
+    segments[segments.length - 1] = ` ${topic}`;
+    const next = segments.join(",").replace(/^\s+/, "") + ", ";
+    setQuery(next);
+    setShowSuggest(true);
+  };
+
+  // Toggle a topic in/out of the comma-separated query (used by topic chips)
+  const toggleTopic = (topic: string) => {
+    const lower = topic.toLowerCase();
+    const tokens = parseTokens(query);
+    const exists = tokens.includes(lower);
+    const next = exists
+      ? tokens.filter((t) => t !== lower)
+      : [...tokens, lower];
+    // Preserve original casing for known topics
+    const display = next.map(
+      (t) => TOPICS.find((x) => x.toLowerCase() === t) ?? t,
+    );
+    setQuery(display.join(", "));
   };
 
   const clearRecent = () => {
