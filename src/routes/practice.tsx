@@ -350,7 +350,7 @@ function PracticePage() {
         </div>
 
         {/* Topic chips */}
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap items-center gap-2">
           {TOPICS.slice(0, 12).map((t) => {
             const active = queryTokens.includes(t.toLowerCase());
             return (
@@ -368,6 +368,14 @@ function PracticePage() {
               </button>
             );
           })}
+          {queryTokens.length > 0 && (
+            <button
+              onClick={() => setQuery("")}
+              className="ml-1 inline-flex items-center gap-1 rounded-full border border-destructive/40 px-2.5 py-1 text-[11px] text-destructive transition hover:bg-destructive/10"
+            >
+              <X className="h-3 w-3" /> Clear all
+            </button>
+          )}
         </div>
 
         {/* Filters bar */}
