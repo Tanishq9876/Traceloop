@@ -86,6 +86,7 @@ function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
   const [language, setLanguage] = useState<string>("python");
   const [mode, setMode] = useState<string>("intermediate");
+  const [comments, setComments] = useState<boolean>(false);
   const [languageTouched, setLanguageTouched] = useState(false);
   const [modeTouched, setModeTouched] = useState(false);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
