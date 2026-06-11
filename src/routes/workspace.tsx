@@ -282,7 +282,7 @@ function Workspace() {
       const resp = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language, mode, followup: true, messages: newHistory }),
+        body: JSON.stringify({ language, mode, comments, followup: true, messages: newHistory }),
         signal: controller.signal,
       });
       if (!resp.ok || !resp.body) {
