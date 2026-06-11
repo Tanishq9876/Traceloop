@@ -570,6 +570,19 @@ function Workspace() {
                   <option value="cpp">C++</option>
                   <option value="go">Go</option>
                 </select>
+                <button
+                  type="button"
+                  onClick={() => setComments((c) => !c)}
+                  disabled={streaming}
+                  title={comments ? "Code will include brief comments" : "Code will be comment-free"}
+                  className={`rounded-md border px-2 py-1 text-xs transition-colors ${
+                    comments
+                      ? "border-primary/60 bg-primary/15 text-foreground"
+                      : "border-border/60 bg-background/60 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {comments ? "Comments: on" : "Comments: off"}
+                </button>
               </div>
             </div>
           </motion.section>
