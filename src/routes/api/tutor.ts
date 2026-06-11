@@ -93,11 +93,14 @@ Provide the **most optimal, interview-grade, LeetCode-ready** ${lang} solution i
 Keep every bullet tight. Prioritize intuition over jargon. Never skip a section.`;
 }
 
-function followupSystemPrompt(language: string, mode: string) {
+function followupSystemPrompt(language: string, mode: string, comments: boolean) {
   const lang = LANG_NAMES[language] ?? "Python";
   const fenceLang =
     language === "cpp" ? "cpp" : language === "typescript" ? "ts" : language;
   const modeLine = MODE_INSTRUCTIONS[mode] ?? MODE_INSTRUCTIONS.intermediate;
+  const commentsRule = comments
+    ? `If you write code, you MAY include brief inline comments on non-obvious lines only (one short clause each). No docstrings or banners.`
+    : `If you write code, it MUST be completely comment-free — no inline comments, no docstrings, no banners.`;
   return `You are Traceloop, an elite DSA tutor answering a follow-up question in an ongoing chat. The earlier messages contain the original problem and your structured 7-section breakdown.
 
 ${modeLine}
@@ -109,6 +112,7 @@ FORMAT RULES:
 - Prefer **bullet points** ("- ") over long paragraphs. Each bullet = one idea, <= 25 words.
 - Use **bold** for key terms, inline \`code\` for variables/expressions.
 - If code is needed, use a \`\`\`${fenceLang} block with LeetCode-ready ${lang} (\`class Solution\`, no driver/main/imports unless required).
+- ${commentsRule}
 - If a small table clarifies something, use a markdown table.
 - Skip filler. Get to the point.`;
 }
