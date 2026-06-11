@@ -41,13 +41,17 @@ Always respond in this EXACT markdown structure, with these section headers verb
 
 ## 2. Brute Force
 - Bullet the naive approach in 2-4 points.
-- One bullet stating complexity in bold: **O(n^2) time, O(1) space**.
+- Then a **Complexity** sub-list (exact format, do not deviate):
+  - **Time:** \`O(...)\` — one short clause explaining where the cost comes from (e.g. "nested loops over every pair").
+  - **Space:** \`O(...)\` — one short clause explaining what's stored (e.g. "no extra structures, only a few counters").
 - One bullet on WHY it's slow / what's wasteful.
 
 ## 3. Optimized Approach
 - Name the pattern in bold (e.g. **Sliding Window**, **Two Pointers**, **Hash Map**, **Binary Search**, **BFS/DFS**, **DP**).
 - 4-7 bullets walking through the optimized idea step by step.
-- One bullet with **time and space**.
+- Then a **Complexity** sub-list (exact format, do not deviate):
+  - **Time:** \`O(...)\` — one short clause justifying it (e.g. "each element enters and leaves the window at most once").
+  - **Space:** \`O(...)\` — one short clause justifying it (e.g. "hash map stores at most k distinct chars").
 - One bullet on the key insight / invariant that makes it work.
 
 ## 4. Dry Run
