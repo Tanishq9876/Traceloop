@@ -32,7 +32,7 @@ const REGISTRY: Record<string, Entry> = {
       walkthrough: [
         "Start: L=0 (1), R=7 (17). Sum = 18 > 17 → move R left.",
         "L=0 (1), R=6 (14). Sum = 15 < 17 → move L right.",
-        "L=1 (3), R=6 (14). Sum = 17 ✓ — pair found.",
+        "L=1 (3), R=6 (14). Sum = 17 ✓ - pair found.",
       ],
       result: "Returns the pair (3, 14).",
     },
@@ -41,7 +41,7 @@ const REGISTRY: Record<string, Entry> = {
   "sliding-window": {
     title: "Sliding Window",
     blurb:
-      "Maintain a window over a sequence. When you slide it forward, update the running aggregate in O(1) by subtracting the element that left and adding the one that joined — no full recomputation needed.",
+      "Maintain a window over a sequence. When you slide it forward, update the running aggregate in O(1) by subtracting the element that left and adding the one that joined - no full recomputation needed.",
     example: {
       input: "arr = [2, 1, 5, 1, 3, 2, 6, 1], k = 3",
       walkthrough: [
@@ -57,7 +57,7 @@ const REGISTRY: Record<string, Entry> = {
     node: <SlidingWindowViz />,
   },
   stack: {
-    title: "Stack — Valid Parentheses",
+    title: "Stack - Valid Parentheses",
     blurb:
       "Push every opening bracket. On a closing bracket, the top of the stack must be its matching opener. Empty stack at the end means the input is balanced.",
     example: {
@@ -77,7 +77,7 @@ const REGISTRY: Record<string, Entry> = {
   "binary-search": {
     title: "Binary Search",
     blurb:
-      "Halve the search range each step by comparing the middle element to the target. Each iteration eliminates half the candidates — O(log n).",
+      "Halve the search range each step by comparing the middle element to the target. Each iteration eliminates half the candidates - O(log n).",
     example: {
       input: "arr = [1,3,5,7,9,12,15,18,22,27,33,40], target = 22",
       walkthrough: [
@@ -89,7 +89,7 @@ const REGISTRY: Record<string, Entry> = {
     node: <BinarySearchViz />,
   },
   bfs: {
-    title: "BFS — Graph Traversal",
+    title: "BFS - Graph Traversal",
     blurb:
       "Explore a graph layer by layer using a queue. Every node at distance k is visited before any node at distance k+1, which is why BFS finds shortest paths in unweighted graphs.",
     example: {
@@ -99,14 +99,14 @@ const REGISTRY: Record<string, Entry> = {
         "Dequeue A. Enqueue B,C → queue [B,C], visited {A,B,C}.",
         "Dequeue B. Enqueue D,E → queue [C,D,E].",
         "Dequeue C. Enqueue F,G → queue [D,E,F,G].",
-        "Dequeue D, E, F, G — no new neighbors.",
+        "Dequeue D, E, F, G - no new neighbors.",
       ],
       result: "Visit order: A, B, C, D, E, F, G (layer by layer).",
     },
     node: <BFSViz />,
   },
   dfs: {
-    title: "DFS — Graph Traversal",
+    title: "DFS - Graph Traversal",
     blurb:
       "Go as deep as possible before backtracking. Implemented with a stack (or recursion). Great for connectivity, cycle detection, and topological sort.",
     example: {
@@ -123,15 +123,15 @@ const REGISTRY: Record<string, Entry> = {
     node: <DFSViz />,
   },
   "recursion-tree": {
-    title: "Recursion Tree — fib(n)",
+    title: "Recursion Tree - fib(n)",
     blurb:
-      "Naive Fibonacci recursion calls the same subproblem many times. Watch the tree expand exponentially — this is exactly the redundancy memoization (top-down DP) eliminates.",
+      "Naive Fibonacci recursion calls the same subproblem many times. Watch the tree expand exponentially - this is exactly the redundancy memoization (top-down DP) eliminates.",
     example: {
       input: "fib(5)",
       walkthrough: [
         "fib(5) calls fib(4) + fib(3).",
-        "fib(4) calls fib(3) + fib(2) — fib(3) is computed twice already.",
-        "fib(3) calls fib(2) + fib(1) — fib(2) is computed multiple times across the tree.",
+        "fib(4) calls fib(3) + fib(2) - fib(3) is computed twice already.",
+        "fib(3) calls fib(2) + fib(1) - fib(2) is computed multiple times across the tree.",
         "Base cases fib(0)=0 and fib(1)=1 bubble sums back up.",
       ],
       result: "fib(5) = 5, but takes 15 calls. With memoization it takes 6.",
@@ -139,9 +139,9 @@ const REGISTRY: Record<string, Entry> = {
     node: <RecursionTreeViz />,
   },
   "dp-grid": {
-    title: "DP — Unique Paths",
+    title: "DP - Unique Paths",
     blurb:
-      "Count paths from top-left to bottom-right moving only right or down. Each cell equals the cell above plus the cell to the left — a classic bottom-up DP recurrence.",
+      "Count paths from top-left to bottom-right moving only right or down. Each cell equals the cell above plus the cell to the left - a classic bottom-up DP recurrence.",
     example: {
       input: "4 × 5 grid",
       walkthrough: [
@@ -155,7 +155,7 @@ const REGISTRY: Record<string, Entry> = {
     node: <DPGridViz />,
   },
   queue: {
-    title: "Queue — FIFO",
+    title: "Queue - FIFO",
     blurb:
       "A queue serves items in the order they arrived (first-in, first-out). It's the backbone of BFS, task schedulers, and producer/consumer pipelines.",
     example: {
@@ -171,9 +171,9 @@ const REGISTRY: Record<string, Entry> = {
     node: <QueueViz />,
   },
   heap: {
-    title: "Min-Heap — Sift Up",
+    title: "Min-Heap - Sift Up",
     blurb:
-      "A binary heap is a complete tree stored in an array. After inserting at the end, sift up — swap with parent while smaller — to restore the heap invariant in O(log n).",
+      "A binary heap is a complete tree stored in an array. After inserting at the end, sift up - swap with parent while smaller - to restore the heap invariant in O(log n).",
     example: {
       input: "Insertions: 8, 3, 6, 1, 5, 2",
       walkthrough: [
@@ -205,7 +205,7 @@ const REGISTRY: Record<string, Entry> = {
     node: <LinkedListViz />,
   },
   "tree-traversal": {
-    title: "Tree — Iterative In-Order",
+    title: "Tree - Iterative In-Order",
     blurb:
       "In-order traversal visits left subtree, then node, then right. Done iteratively with an explicit stack: dive left, pop and visit, then dive right.",
     example: {
@@ -275,7 +275,7 @@ function VizDetail() {
         <aside className="glass h-fit rounded-2xl border border-border/60 p-5">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
             <Lightbulb className="h-3.5 w-3.5" />
-            How it works — example
+            How it works - example
           </div>
           <div className="mt-3 rounded-md border border-border/60 bg-background/40 px-3 py-2 font-mono text-xs text-foreground/80">
             {entry.example.input}

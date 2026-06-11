@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Traceloop — Understand DSA. Don't Memorize It." },
+      { title: "Traceloop - Understand DSA. Don't Memorize It." },
       {
         name: "description",
         content:
@@ -83,7 +83,7 @@ function Landing() {
 
           <p className="mx-auto mt-5 max-w-xl text-pretty text-base text-muted-foreground md:text-lg">
             Learn algorithms visually with AI-powered intuition, dry runs, and
-            interactive simulations — the way a great mentor would teach you.
+            interactive simulations - the way a great mentor would teach you.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -176,7 +176,7 @@ function Landing() {
             <AccordionTrigger>Is Traceloop a problem solver or a tutor?</AccordionTrigger>
             <AccordionContent className="text-muted-foreground">
               A tutor first. It can solve problems, but its priority is building intuition you'd
-              re-derive on your own — visualizations, dry runs, and Socratic questions.
+              re-derive on your own - visualizations, dry runs, and Socratic questions.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="2">
@@ -188,7 +188,7 @@ function Landing() {
           <AccordionItem value="3">
             <AccordionTrigger>Does it work on mobile?</AccordionTrigger>
             <AccordionContent className="text-muted-foreground">
-              Yes — visualizations, dry runs, and the tutor are all mobile-first.
+              Yes - visualizations, dry runs, and the tutor are all mobile-first.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="4">
@@ -201,7 +201,7 @@ function Landing() {
           <AccordionItem value="5">
             <AccordionTrigger>How is this different from LeetCode or YouTube tutorials?</AccordionTrigger>
             <AccordionContent className="text-muted-foreground">
-              LeetCode tests you; tutorials lecture at you. Traceloop *teaches* — interactive
+              LeetCode tests you; tutorials lecture at you. Traceloop *teaches* - interactive
               visualizations, brute-force-to-optimal walkthroughs, and a tutor that answers
               "why" as many times as you need.
             </AccordionContent>
@@ -210,13 +210,13 @@ function Landing() {
             <AccordionTrigger>Can I practice for technical interviews here?</AccordionTrigger>
             <AccordionContent className="text-muted-foreground">
               Yes. The Interview mode runs mock coding rounds with follow-up questions,
-              complexity discussions, and feedback — just like a real interviewer.
+              complexity discussions, and feedback - just like a real interviewer.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="7">
             <AccordionTrigger>Does Traceloop track my progress?</AccordionTrigger>
             <AccordionContent className="text-muted-foreground">
-              Yes — your history, solved problems, and learning patterns are saved so the tutor
+              Yes - your history, solved problems, and learning patterns are saved so the tutor
               can personalize future sessions and revisit weak spots.
             </AccordionContent>
           </AccordionItem>
