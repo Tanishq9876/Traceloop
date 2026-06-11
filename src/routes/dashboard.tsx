@@ -23,7 +23,7 @@ import { listSessions, getStats, listBookmarks } from "@/lib/learning.functions"
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
-  head: () => ({ meta: [{ title: "Dashboard — Traceloop" }] }),
+  head: () => ({ meta: [{ title: "Dashboard - Traceloop" }] }),
 });
 
 type SessionRow = {
