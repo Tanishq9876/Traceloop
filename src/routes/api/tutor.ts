@@ -17,11 +17,14 @@ const MODE_INSTRUCTIONS: Record<string, string> = {
   eli10: "Audience: explain like I'm 10. Use everyday analogies (toys, lines at a store, lockers) before introducing any technical term.",
 };
 
-function systemPrompt(language: string, mode: string) {
+function systemPrompt(language: string, mode: string, comments: boolean) {
   const lang = LANG_NAMES[language] ?? "Python";
   const fenceLang =
     language === "cpp" ? "cpp" : language === "typescript" ? "ts" : language;
   const modeLine = MODE_INSTRUCTIONS[mode] ?? MODE_INSTRUCTIONS.intermediate;
+  const commentsRule = comments
+    ? `- Include **brief, helpful inline comments** explaining the non-obvious steps (key invariants, why a pointer moves, what a tricky index represents). Keep each comment short (one short clause). Do NOT narrate every line, do NOT add docstrings, banners, or complexity comments. Aim for ~1 comment per logical block, not per line.`
+    : `- The code MUST be **completely comment-free**. Do NOT add ANY comments at all — no inline comments, no docstrings, no banners, no complexity notes. Variable names alone must convey intent.`;
   return `You are Traceloop, an elite DSA tutor. The user gives you a programming problem (as text and/or an image of a problem statement). If an image is provided, first read the problem from it.
 
 ${modeLine}
