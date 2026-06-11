@@ -24,7 +24,7 @@ import { useProfile } from "@/hooks/use-profile";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
-  head: () => ({ meta: [{ title: "Profile — Traceloop" }] }),
+  head: () => ({ meta: [{ title: "Profile - Traceloop" }] }),
 });
 
 const MODES = [

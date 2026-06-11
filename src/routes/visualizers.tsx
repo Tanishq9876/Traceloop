@@ -5,7 +5,7 @@ import { Nav } from "@/components/site/Nav";
 
 export const Route = createFileRoute("/visualizers")({
   component: VisualizersLayout,
-  head: () => ({ meta: [{ title: "Visualizers — Traceloop" }] }),
+  head: () => ({ meta: [{ title: "Visualizers - Traceloop" }] }),
 });
 
 export const VIZ_LIST = [

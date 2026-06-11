@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/interview")({
   component: Interview,
-  head: () => ({ meta: [{ title: "Mock Interview — Traceloop" }] }),
+  head: () => ({ meta: [{ title: "Mock Interview - Traceloop" }] }),
 });
 
 type Msg = { role: "user" | "assistant"; content: string; hidden?: boolean };

@@ -234,7 +234,7 @@ export const Route = createFileRoute("/visualizers/$slug")({
     return { slug: params.slug };
   },
   head: ({ params }) => ({
-    meta: [{ title: `${REGISTRY[params.slug]?.title ?? "Visualizer"} — Traceloop` }],
+    meta: [{ title: `${REGISTRY[params.slug]?.title ?? "Visualizer"} - Traceloop` }],
   }),
 });
 

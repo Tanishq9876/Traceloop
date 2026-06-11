@@ -16,7 +16,7 @@ import {
 
 export const Route = createFileRoute("/history")({
   component: HistoryPage,
-  head: () => ({ meta: [{ title: "History — Traceloop" }] }),
+  head: () => ({ meta: [{ title: "History - Traceloop" }] }),
 });
 
 type Row = { id: string; title: string; pattern: string | null; created_at: string };

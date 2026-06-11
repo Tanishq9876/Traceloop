@@ -48,7 +48,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/workspace")({
   component: Workspace,
   validateSearch: (s) => searchSchema.parse(s),
-  head: () => ({ meta: [{ title: "Workspace — Traceloop" }] }),
+  head: () => ({ meta: [{ title: "Workspace - Traceloop" }] }),
 });
 
 const EXAMPLES = [

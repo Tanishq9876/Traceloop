@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
   head: () => ({
-    meta: [{ title: "Sign in — Traceloop" }],
+    meta: [{ title: "Sign in - Traceloop" }],
   }),
 });
 

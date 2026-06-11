@@ -35,7 +35,7 @@ export const Route = createFileRoute("/practice")({
   component: PracticePage,
   head: () => ({
     meta: [
-      { title: "Practice — Traceloop" },
+      { title: "Practice - Traceloop" },
       {
         name: "description",
         content:
