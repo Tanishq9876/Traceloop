@@ -86,6 +86,7 @@ function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
   const [language, setLanguage] = useState<string>("python");
   const [mode, setMode] = useState<string>("intermediate");
+  const [comments, setComments] = useState<boolean>(false);
   const [languageTouched, setLanguageTouched] = useState(false);
   const [modeTouched, setModeTouched] = useState(false);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
@@ -161,7 +162,7 @@ function Workspace() {
       const resp = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problem, language, mode, imageDataUrl }),
+        body: JSON.stringify({ problem, language, mode, comments, imageDataUrl }),
         signal: controller.signal,
       });
 
@@ -281,7 +282,7 @@ function Workspace() {
       const resp = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language, mode, followup: true, messages: newHistory }),
+        body: JSON.stringify({ language, mode, comments, followup: true, messages: newHistory }),
         signal: controller.signal,
       });
       if (!resp.ok || !resp.body) {
@@ -569,6 +570,19 @@ function Workspace() {
                   <option value="cpp">C++</option>
                   <option value="go">Go</option>
                 </select>
+                <button
+                  type="button"
+                  onClick={() => setComments((c) => !c)}
+                  disabled={streaming}
+                  title={comments ? "Code will include brief comments" : "Code will be comment-free"}
+                  className={`rounded-md border px-2 py-1 text-xs transition-colors ${
+                    comments
+                      ? "border-primary/60 bg-primary/15 text-foreground"
+                      : "border-border/60 bg-background/60 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {comments ? "Comments: on" : "Comments: off"}
+                </button>
               </div>
             </div>
           </motion.section>

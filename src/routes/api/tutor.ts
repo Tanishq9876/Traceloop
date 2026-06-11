@@ -17,11 +17,14 @@ const MODE_INSTRUCTIONS: Record<string, string> = {
   eli10: "Audience: explain like I'm 10. Use everyday analogies (toys, lines at a store, lockers) before introducing any technical term.",
 };
 
-function systemPrompt(language: string, mode: string) {
+function systemPrompt(language: string, mode: string, comments: boolean) {
   const lang = LANG_NAMES[language] ?? "Python";
   const fenceLang =
     language === "cpp" ? "cpp" : language === "typescript" ? "ts" : language;
   const modeLine = MODE_INSTRUCTIONS[mode] ?? MODE_INSTRUCTIONS.intermediate;
+  const commentsRule = comments
+    ? `- Include **brief, helpful inline comments** explaining the non-obvious steps (key invariants, why a pointer moves, what a tricky index represents). Keep each comment short (one short clause). Do NOT narrate every line, do NOT add docstrings, banners, or complexity comments. Aim for ~1 comment per logical block, not per line.`
+    : `- The code MUST be **completely comment-free**. Do NOT add ANY comments at all — no inline comments, no docstrings, no banners, no complexity notes. Variable names alone must convey intent.`;
   return `You are Traceloop, an elite DSA tutor. The user gives you a programming problem (as text and/or an image of a problem statement). If an image is provided, first read the problem from it.
 
 ${modeLine}
@@ -75,7 +78,7 @@ Provide the **most optimal, interview-grade, LeetCode-ready** ${lang} solution i
   - JavaScript/TypeScript: the exact \`var funcName = function(...) { ... };\` or typed function signature LeetCode expects.
 - Match LeetCode's exact method name, parameter names, and return type for the given problem. If the problem isn't a known LeetCode problem, infer the most natural \`Solution\`-class signature.
 - DO NOT include driver code, \`main\`, stdin/stdout, print statements, example calls, or test harness.
-- Clean, self-explanatory variable names. Keep comments to a strict minimum — AT MOST 1-2 short inline comments in the entire solution, and ONLY on genuinely non-obvious lines (a tricky invariant, a non-trivial index trick). Do NOT comment every line, do NOT narrate what the code is doing, do NOT add docstrings, banners, or complexity comments inside code. If a line is self-explanatory from its variable names, it gets no comment.
+- ${commentsRule.slice(2)}
 - The code block must be self-contained, submission-ready, and represent the optimal solution — zero edits required from the user.
 
 
@@ -90,11 +93,14 @@ Provide the **most optimal, interview-grade, LeetCode-ready** ${lang} solution i
 Keep every bullet tight. Prioritize intuition over jargon. Never skip a section.`;
 }
 
-function followupSystemPrompt(language: string, mode: string) {
+function followupSystemPrompt(language: string, mode: string, comments: boolean) {
   const lang = LANG_NAMES[language] ?? "Python";
   const fenceLang =
     language === "cpp" ? "cpp" : language === "typescript" ? "ts" : language;
   const modeLine = MODE_INSTRUCTIONS[mode] ?? MODE_INSTRUCTIONS.intermediate;
+  const commentsRule = comments
+    ? `If you write code, you MAY include brief inline comments on non-obvious lines only (one short clause each). No docstrings or banners.`
+    : `If you write code, it MUST be completely comment-free — no inline comments, no docstrings, no banners.`;
   return `You are Traceloop, an elite DSA tutor answering a follow-up question in an ongoing chat. The earlier messages contain the original problem and your structured 7-section breakdown.
 
 ${modeLine}
@@ -106,6 +112,7 @@ FORMAT RULES:
 - Prefer **bullet points** ("- ") over long paragraphs. Each bullet = one idea, <= 25 words.
 - Use **bold** for key terms, inline \`code\` for variables/expressions.
 - If code is needed, use a \`\`\`${fenceLang} block with LeetCode-ready ${lang} (\`class Solution\`, no driver/main/imports unless required).
+- ${commentsRule}
 - If a small table clarifies something, use a markdown table.
 - Skip filler. Get to the point.`;
 }
@@ -121,11 +128,12 @@ export const Route = createFileRoute("/api/tutor")({
             problem?: string;
             language?: string;
             mode?: string;
+            comments?: boolean;
             imageDataUrl?: string;
             followup?: boolean;
             messages?: Array<{ role: "user" | "assistant"; content: string }>;
           };
-          const { problem, language = "python", mode = "intermediate", imageDataUrl, followup, messages: history } = body;
+          const { problem, language = "python", mode = "intermediate", comments = false, imageDataUrl, followup, messages: history } = body;
 
           const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
           if (!LOVABLE_API_KEY) {
@@ -171,8 +179,8 @@ export const Route = createFileRoute("/api/tutor")({
                   {
                     role: "system",
                     content: followup
-                      ? followupSystemPrompt(language, mode)
-                      : systemPrompt(language, mode),
+                      ? followupSystemPrompt(language, mode, comments)
+                      : systemPrompt(language, mode, comments),
                   },
                   ...messages,
                 ],
