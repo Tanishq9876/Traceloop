@@ -42,11 +42,13 @@ export const Route = createFileRoute("/")({
 
 const features = [
   { icon: Brain, title: "Intuition-first AI tutor", body: "Adaptive explanations from absolute beginner to interview-ready." },
-  { icon: Eye, title: "Interactive visualizers", body: "Step through pointers, windows, stacks, graphs and DP tables." },
-  { icon: Workflow, title: "Brute force → optimized", body: "See *why* the naive solution fails before the smart trick lands." },
-  { icon: Code2, title: "Line-by-line code", body: "C++, Java, Python, JavaScript with explanations on every line." },
+  { icon: Eye, title: "Interactive visualizers", body: "Step through pointers, windows, stacks, graphs and DP tables frame by frame." },
+  { icon: Workflow, title: "Brute force → optimized", body: "See why the naive solution fails before the smart trick lands." },
+  { icon: Code2, title: "Clean or commented code", body: "C++, Java, Python, JavaScript. Toggle comments on or off to match your style." },
   { icon: MessageSquare, title: "Socratic mode", body: "The tutor asks the right questions instead of dumping answers." },
-  { icon: Gauge, title: "Complexity, made obvious", body: "Honest time/space analysis with the trade-offs that matter." },
+  { icon: Gauge, title: "Complexity, made obvious", body: "Honest time/space analysis in bullet points with the trade-offs that matter." },
+  { icon: Mic, title: "Mock interviews", body: "AI interviewer with voice input, hint ladder, and follow-up questions just like the real thing." },
+  { icon: Target, title: "Curated practice hub", body: "Multi-topic problems from LeetCode, GFG, Codeforces and CodeChef with save and track." },
 ];
 
 const visualizers = [
