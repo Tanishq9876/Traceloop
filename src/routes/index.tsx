@@ -49,6 +49,7 @@ const features = [
   { icon: Gauge, title: "Complexity, made obvious", body: "Honest time/space analysis in bullet points with the trade-offs that matter." },
   { icon: Mic, title: "Mock interviews", body: "AI interviewer with voice input, hint ladder, and follow-up questions just like the real thing." },
   { icon: Target, title: "Curated practice hub", body: "Multi-topic problems from LeetCode, GFG, Codeforces and CodeChef with save and track." },
+  { icon: Bookmark, title: "Notes and bookmarks", body: "Save every session to history, bookmark favorites, and jot inline notes you can revisit anytime." },
 ];
 
 const visualizers = [
