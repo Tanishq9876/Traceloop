@@ -75,16 +75,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Traceloop - Understand DSA. Don't Memorize It." },
+      { title: "Traceloop" },
       {
         name: "description",
         content:
           "AI-powered DSA tutor with interactive algorithm visualizations, dry runs, and intuition-first explanations.",
       },
       { property: "og:title", content: "Traceloop" },
-      { property: "og:description", content: "Understand the flow behind every algorithm." },
+      { property: "og:description", content: "AI-powered DSA tutor that turns coding problems into intuitive explanations, visual simulations, dry runs, and interactive learning." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Traceloop" },
+      { name: "description", content: "AI-powered DSA tutor that turns coding problems into intuitive explanations, visual simulations, dry runs, and interactive learning." },
+      { name: "twitter:description", content: "AI-powered DSA tutor that turns coding problems into intuitive explanations, visual simulations, dry runs, and interactive learning." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/YHIKr64nM3X5Sde1ps21MkOb3W02/social-images/social-1781369086641-Screenshot_2026-06-13_221433.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/YHIKr64nM3X5Sde1ps21MkOb3W02/social-images/social-1781369086641-Screenshot_2026-06-13_221433.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
